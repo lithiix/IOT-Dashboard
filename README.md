@@ -15,28 +15,24 @@ A Next.js dashboard application that displays real-time data from Firebase Realt
 
 ## Firebase Project Setup
 
-This project is configured to work with the **lionbit-test** Firebase project.
-
-### Current Firebase Configuration:
-
-- **Project ID**: lionbit-test
-- **Database URL**: https://lionbit-test-default-rtdb.firebaseio.com
-- **Analytics**: Enabled
+This project uses Firebase Realtime Database for data storage and synchronization.
 
 ### Environment Variables
 
-The `.env.local` file is already configured with your Firebase credentials. The file contains:
+Create a `.env.local` file in the root directory with your Firebase credentials:
 
 ```env
-NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSyDhSHZpKn0A4CAnJA1BbOjQyonOWk4HizM
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=lionbit-test.firebaseapp.com
-NEXT_PUBLIC_FIREBASE_DATABASE_URL=https://lionbit-test-default-rtdb.firebaseio.com
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=lionbit-test
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=lionbit-test.firebasestorage.app
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=783632941074
-NEXT_PUBLIC_FIREBASE_APP_ID=1:783632941074:web:9e1b8566467c3ef4ce58cb
-NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=G-YFNVTY8NY0
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key_here
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_DATABASE_URL=https://your_project.firebaseio.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.firebasestorage.app
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
 ```
+
+**Note**: Never commit the `.env.local` file to version control. It's already included in `.gitignore`.
 
 ## Getting Started
 
@@ -56,9 +52,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ### 3. Test Firebase Connection
 
-1. Click "Test Firebase Connection" to verify the setup
-2. Click "Update Dashboard Data" to generate sample metrics
-3. Watch the data update in real-time across multiple browser tabs
+1. Open the dashboard in your browser
+2. Verify that your IoT device data is being displayed in real-time
+3. Check the connection status indicator (Online/Offline/Checking)
 
 ## Project Structure
 
