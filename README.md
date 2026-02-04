@@ -2,6 +2,8 @@
 
 A Next.js dashboard application that displays real-time data from Firebase Realtime Database, ready for deployment on Vercel.
 
+🔗 **Live Demo**: [https://iot-dashboard-ruby.vercel.app/](https://iot-dashboard-ruby.vercel.app/)
+
 ## Features
 
 - Real-time data synchronization with Firebase Realtime Database
