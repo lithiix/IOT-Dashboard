@@ -1,36 +1,178 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Realtime Dashboard with Firebase
+
+A Next.js dashboard application that displays real-time data from Firebase Realtime Database, ready for deployment on Vercel.
+
+## Features
+
+- Real-time data synchronization with Firebase Realtime Database
+- Responsive dashboard UI with Tailwind CSS
+- TypeScript support
+- Firebase Analytics integration
+- Vercel deployment ready
+- Connection status monitoring
+
+## Firebase Project Setup
+
+This project is configured to work with the **lionbit-test** Firebase project.
+
+### Current Firebase Configuration:
+- **Project ID**: lionbit-test
+- **Database URL**: https://lionbit-test-default-rtdb.firebaseio.com
+- **Analytics**: Enabled
+
+### Environment Variables
+
+The `.env.local` file is already configured with your Firebase credentials. The file contains:
+
+```env
+NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSyDhSHZpKn0A4CAnJA1BbOjQyonOWk4HizM
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=lionbit-test.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_DATABASE_URL=https://lionbit-test-default-rtdb.firebaseio.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=lionbit-test
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=lionbit-test.firebasestorage.app
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=783632941074
+NEXT_PUBLIC_FIREBASE_APP_ID=1:783632941074:web:9e1b8566467c3ef4ce58cb
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=G-YFNVTY8NY0
+```
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the dashboard.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Test Firebase Connection
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Click "Test Firebase Connection" to verify the setup
+2. Click "Update Dashboard Data" to generate sample metrics
+3. Watch the data update in real-time across multiple browser tabs
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+├── app/
+│   ├── layout.tsx          # Root layout with Firebase provider
+│   ├── page.tsx            # Main dashboard page
+│   └── globals.css         # Global styles
+├── components/
+│   └── Dashboard.tsx       # Main dashboard component
+├── contexts/
+│   └── FirebaseContext.tsx # Firebase context provider
+├── hooks/
+│   └── useFirebase.ts      # Custom Firebase hooks
+├── lib/
+│   └── firebase.ts         # Firebase configuration
+└── .env.local              # Environment variables (not committed)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Firebase Data Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The dashboard displays data from your Firebase Realtime Database with this structure:
+
+### IoT Sensor Data
+```json
+{
+  "lionbit": {
+    "device01": {
+      "logs": {
+        "unique_log_id": {
+          "gas": 271,
+          "humidity": 89,
+          "temperature": 35,
+          "time": 6364
+        }
+      }
+    }
+  }
+}
+```
+
+### Dashboard System Data
+```json
+{
+  "dashboard": {
+    "lastUpdated": "2024-01-01T00:00:00.000Z",
+    "status": "active",
+    "metrics": {
+      "users": 1234,
+      "revenue": 56789,
+      "orders": 456
+    }
+  }
+}
+```
+
+## Custom Hooks
+
+### `useRealtimeData(path: string)`
+Fetches and listens to real-time data from a Firebase path.
+
+```tsx
+const { data, loading, error } = useRealtimeData('dashboard');
+```
+
+### `useRealtimeList(path: string)`
+Converts Firebase object data to an array with IDs.
+
+```tsx
+const { list, loading, error } = useRealtimeList('items');
+```
+
+### `useFirebaseMutation()`
+Provides methods to write, update, and delete Firebase data.
+
+```tsx
+const { writeData, pushData, updateData, deleteData } = useFirebaseMutation();
+
+// Write data
+await writeData('path/to/data', { key: 'value' });
+
+// Push new item
+await pushData('path/to/list', { item: 'data' });
+
+// Update existing data
+await updateData('path/to/data', { key: 'newValue' });
+
+// Delete data
+await deleteData('path/to/data');
+```
+
+## Dashboard Features
+
+- **Real-time Sensor Data**: Displays latest temperature, humidity, gas level, and timestamp from device01
+- **Sensor Logs History**: Table showing the last 10 sensor readings with Firebase log IDs
+- **Connection Status**: Visual indicator showing Firebase connection status
+- **System Metrics**: Additional dashboard metrics for users, revenue, and orders
+- **Error Handling**: Graceful error handling with retry options
+- **Responsive Design**: Works on desktop and mobile devices
+- **Loading States**: Smooth loading animations and states
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Add the environment variables in Vercel dashboard (copy from `.env.local`)
+4. Deploy!
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Firebase Console
+
+Access your Firebase project at: https://console.firebase.google.com/project/lionbit-test
+
+- **Realtime Database**: View and edit data at https://console.firebase.google.com/project/lionbit-test/database
+- **Analytics**: Monitor usage at https://console.firebase.google.com/project/lionbit-test/analytics
+
+## Learn More
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Firebase Realtime Database](https://firebase.google.com/docs/database)
+- [Tailwind CSS](https://tailwindcss.com/docs)
