@@ -40,7 +40,6 @@ export default function Dashboard() {
   const { list: sensorLogs, loading: logsLoading } = useRealtimeList('lionbit/device01/logs');
   const { writeData } = useFirebaseMutation();
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'error'>('checking');
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastDataUpdate, setLastDataUpdate] = useState<number>(Date.now());
 
   // Track when sensor data changes (device is actively sending data)
@@ -74,28 +73,6 @@ export default function Dashboard() {
 
     return () => clearInterval(interval);
   }, [loading, error, logsLoading, sensorLogs.length, lastDataUpdate]);
-
-  const handleUpdateData = async () => {
-    setIsRefreshing(true);
-    const timestamp = new Date().toISOString();
-    const result = await writeData('dashboard', {
-      lastUpdated: timestamp,
-      status: 'active',
-      metrics: {
-        totalDevices: Math.floor(Math.random() * 10) + 1,
-        totalReadings: Math.floor(Math.random() * 10000) + 1000,
-        activeAlerts: Math.floor(Math.random() * 5)
-      }
-    });
-
-    if (result.success) {
-      setConnectionStatus('connected');
-    } else {
-      setConnectionStatus('error');
-      console.error('Firebase write error:', result.error);
-    }
-    setIsRefreshing(false);
-  };
 
   const handleTestConnection = async () => {
     setConnectionStatus('checking');
@@ -209,10 +186,10 @@ export default function Dashboard() {
               </span>
             </div>
             <div className="text-right">
-              <div className="text-white text-sm">Last Updated</div>
+              <div className="text-white text-sm">Last Device Online</div>
               <div className="text-purple-300 text-xs">
-                {dashboardData?.lastUpdated
-                  ? new Date(dashboardData.lastUpdated).toLocaleString()
+                {latestReading
+                  ? new Date(lastDataUpdate).toLocaleString()
                   : 'Never'
                 }
               </div>
@@ -413,59 +390,46 @@ export default function Dashboard() {
         </div>
 
         {/* IoT System Metrics */}
-        {dashboardData?.metrics && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-              <div className="flex items-center justify-between mb-4">
-                <Activity className="w-8 h-8 opacity-80" />
-                <TrendingUp className="w-5 h-5 opacity-60" />
-              </div>
-              <div className="text-3xl font-bold mb-1">
-                {dashboardData.metrics.totalDevices || 1}
-              </div>
-              <div className="text-indigo-100 text-sm">Total Devices</div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+            <div className="flex items-center justify-between mb-4">
+              <Activity className="w-8 h-8 opacity-80" />
+              <TrendingUp className="w-5 h-5 opacity-60" />
             </div>
-
-            <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-              <div className="flex items-center justify-between mb-4">
-                <Activity className="w-8 h-8 opacity-80" />
-                <TrendingUp className="w-5 h-5 opacity-60" />
-              </div>
-              <div className="text-3xl font-bold mb-1">
-                {dashboardData.metrics.totalReadings || sensorLogs.length}
-              </div>
-              <div className="text-emerald-100 text-sm">Total Readings</div>
+            <div className="text-3xl font-bold mb-1">
+              1
             </div>
-
-            <div className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-              <div className="flex items-center justify-between mb-4">
-                <AlertCircle className="w-8 h-8 opacity-80" />
-                <Activity className="w-5 h-5 opacity-60" />
-              </div>
-              <div className="text-3xl font-bold mb-1">
-                {dashboardData.metrics.activeAlerts !== undefined ? dashboardData.metrics.activeAlerts : 0}
-              </div>
-              <div className="text-amber-100 text-sm">Active Alerts</div>
-            </div>
+            <div className="text-indigo-100 text-sm">Total Devices</div>
           </div>
-        )}
+
+          <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+            <div className="flex items-center justify-between mb-4">
+              <Activity className="w-8 h-8 opacity-80" />
+              <TrendingUp className="w-5 h-5 opacity-60" />
+            </div>
+            <div className="text-3xl font-bold mb-1">
+              {sensorLogs.length}
+            </div>
+            <div className="text-emerald-100 text-sm">Total Readings</div>
+          </div>
+
+          <div className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+            <div className="flex items-center justify-between mb-4">
+              <AlertCircle className="w-8 h-8 opacity-80" />
+              <Activity className="w-5 h-5 opacity-60" />
+            </div>
+            <div className="text-3xl font-bold mb-1">
+              {sensorLogs.filter(log => (log as SensorReading).gas > 500).length}
+            </div>
+            <div className="text-amber-100 text-sm">Gas Level Alerts</div>
+            <div className="text-amber-200 text-xs opacity-80">Readings {'>'}  500 ppm</div>
+          </div>
+        </div>
 
         {/* Actions */}
         <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700">
           <h3 className="text-white text-lg font-semibold mb-4">Dashboard Controls</h3>
           <div className="flex flex-wrap gap-4">
-            <button
-              onClick={handleUpdateData}
-              disabled={isRefreshing}
-              className="bg-purple-600 hover:bg-purple-700 disabled:bg-purple-800 disabled:cursor-not-allowed text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 flex items-center"
-            >
-              {isRefreshing ? (
-                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-              ) : (
-                <RefreshCw className="w-4 h-4 mr-2" />
-              )}
-              Update Dashboard Data
-            </button>
             <button
               onClick={handleTestConnection}
               className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 flex items-center"
