@@ -41,6 +41,39 @@ export default function Dashboard() {
   const { writeData } = useFirebaseMutation();
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'error'>('checking');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastDataUpdate, setLastDataUpdate] = useState<number>(Date.now());
+
+  // Track when sensor data changes (device is actively sending data)
+  useEffect(() => {
+    if (sensorLogs.length > 0) {
+      setLastDataUpdate(Date.now());
+    }
+  }, [sensorLogs.length, JSON.stringify(sensorLogs[sensorLogs.length - 1])]);
+
+  // Monitor device connection based on data activity
+  useEffect(() => {
+    const checkDeviceStatus = () => {
+      const timeSinceLastUpdate = Date.now() - lastDataUpdate;
+      const timeoutThreshold = 30000; // 30 seconds
+
+      if (loading || logsLoading) {
+        setConnectionStatus('checking');
+      } else if (error) {
+        setConnectionStatus('error');
+      } else if (sensorLogs.length === 0) {
+        setConnectionStatus('error'); // No data from device
+      } else if (timeSinceLastUpdate > timeoutThreshold) {
+        setConnectionStatus('error'); // Device stopped sending data
+      } else {
+        setConnectionStatus('connected'); // Device is active
+      }
+    };
+
+    checkDeviceStatus();
+    const interval = setInterval(checkDeviceStatus, 5000); // Check every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [loading, error, logsLoading, sensorLogs.length, lastDataUpdate]);
 
   const handleUpdateData = async () => {
     setIsRefreshing(true);
@@ -81,6 +114,20 @@ export default function Dashboard() {
 
   // Get latest sensor reading
   const latestReading = sensorLogs.length > 0 ? sensorLogs[sensorLogs.length - 1] as SensorReading : null;
+
+  // Update connection status based on IoT device data availability
+  useEffect(() => {
+    if (loading || logsLoading) {
+      setConnectionStatus('checking');
+    } else if (error) {
+      setConnectionStatus('error');
+    } else if (sensorLogs.length > 0) {
+      // If we have sensor data from Firebase, device is connected
+      setConnectionStatus('connected');
+    } else {
+      setConnectionStatus('error'); // No data from device
+    }
+  }, [loading, error, logsLoading, sensorLogs.length]);
 
   // Prepare chart data from sensor logs
   const chartData = sensorLogs.slice(-20).map((log) => {
@@ -157,8 +204,8 @@ export default function Dashboard() {
             <div className="flex items-center space-x-2 bg-slate-800/50 backdrop-blur-sm rounded-lg px-4 py-2">
               {getConnectionIcon()}
               <span className="text-white text-sm">
-                {connectionStatus === 'connected' ? 'Connected' :
-                 connectionStatus === 'error' ? 'Connection Error' : 'Checking...'}
+                {connectionStatus === 'connected' ? 'Device Online' :
+                 connectionStatus === 'error' ? 'Device Offline' : 'Checking...'}
               </span>
             </div>
             <div className="text-right">
