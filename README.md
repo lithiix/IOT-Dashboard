@@ -155,13 +155,17 @@ await deleteData("path/to/data");
 
 ## Dashboard Features
 
-- **Real-time Sensor Data**: Displays latest temperature, humidity, gas level, and timestamp from device01
-- **Sensor Logs History**: Table showing the last 10 sensor readings with Firebase log IDs
-- **Connection Status**: Visual indicator showing Firebase connection status
-- **System Metrics**: Additional dashboard metrics for users, revenue, and orders
-- **Error Handling**: Graceful error handling with retry options
-- **Responsive Design**: Works on desktop and mobile devices
-- **Loading States**: Smooth loading animations and states
+- **🎨 Modern Dark UI**: Beautiful gradient backgrounds with glassmorphism effects
+- **📊 Real-time Charts**: Interactive temperature and humidity trend charts
+- **📱 Responsive Design**: Optimized for desktop, tablet, and mobile devices
+- **🔴 Live Sensor Cards**: Gradient cards with icons for temperature, humidity, gas, and timestamp
+- **📋 Enhanced Data Table**: Improved sensor logs with status indicators and icons
+- **⚡ Real-time Updates**: Automatic data synchronization across all connected clients
+- **🔗 Connection Status**: Visual Firebase connection indicator with animations
+- **🎯 Interactive Elements**: Hover effects, loading states, and smooth transitions
+- **📈 System Metrics**: Additional dashboard metrics with gradient cards
+- **🔄 Loading Animations**: Beautiful loading spinners and skeleton states
+- **🎨 Status Badges**: Color-coded status indicators for sensor readings
 
 ## Deploy on Vercel
 
@@ -177,8 +181,23 @@ Access your Firebase project at: https://console.firebase.google.com/project/lio
 - **Realtime Database**: View and edit data at https://console.firebase.google.com/project/lionbit-test/database
 - **Analytics**: Monitor usage at https://console.firebase.google.com/project/lionbit-test/analytics
 
-## Learn More
+## Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Firebase Realtime Database](https://firebase.google.com/docs/database)
-- [Tailwind CSS](https://tailwindcss.com/docs)
+- **Framework**: Next.js 16 with TypeScript
+- **Styling**: Tailwind CSS with custom gradients and animations
+- **Charts**: Recharts for data visualization
+- **Icons**: Lucide React for consistent iconography
+- **Database**: Firebase Realtime Database
+- **Deployment**: Vercel (recommended)
+
+## Dependencies
+
+### Core Dependencies
+- `next`: ^16.1.6 - React framework
+- `react`: ^19.2.4 - UI library
+- `firebase`: ^12.8.0 - Database and analytics
+
+### UI Enhancement Dependencies
+- `recharts`: ^2.12.0 - Chart library for data visualization
+- `lucide-react`: ^0.344.0 - Beautiful icons
+- `tailwindcss`: ^4.0.0 - Utility-first CSS framework
