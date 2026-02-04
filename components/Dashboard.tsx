@@ -22,9 +22,6 @@ import {
   WifiOff,
   Activity,
   TrendingUp,
-  Users,
-  DollarSign,
-  ShoppingCart,
   RefreshCw,
   CheckCircle,
   AlertCircle
@@ -52,9 +49,9 @@ export default function Dashboard() {
       lastUpdated: timestamp,
       status: 'active',
       metrics: {
-        users: Math.floor(Math.random() * 1000),
-        revenue: Math.floor(Math.random() * 10000),
-        orders: Math.floor(Math.random() * 500)
+        totalDevices: Math.floor(Math.random() * 10) + 1,
+        totalReadings: Math.floor(Math.random() * 10000) + 1000,
+        activeAlerts: Math.floor(Math.random() * 5)
       }
     });
 
@@ -368,40 +365,40 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* System Metrics */}
+        {/* IoT System Metrics */}
         {dashboardData?.metrics && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl p-6 text-white shadow-lg">
+            <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
               <div className="flex items-center justify-between mb-4">
-                <Users className="w-8 h-8 opacity-80" />
+                <Activity className="w-8 h-8 opacity-80" />
                 <TrendingUp className="w-5 h-5 opacity-60" />
               </div>
               <div className="text-3xl font-bold mb-1">
-                {dashboardData.metrics.users?.toLocaleString() || 0}
+                {dashboardData.metrics.totalDevices || 1}
               </div>
-              <div className="text-indigo-100 text-sm">Active Users</div>
+              <div className="text-indigo-100 text-sm">Total Devices</div>
             </div>
 
-            <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-6 text-white shadow-lg">
+            <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
               <div className="flex items-center justify-between mb-4">
-                <DollarSign className="w-8 h-8 opacity-80" />
+                <Activity className="w-8 h-8 opacity-80" />
                 <TrendingUp className="w-5 h-5 opacity-60" />
               </div>
               <div className="text-3xl font-bold mb-1">
-                ${dashboardData.metrics.revenue?.toLocaleString() || 0}
+                {dashboardData.metrics.totalReadings || sensorLogs.length}
               </div>
-              <div className="text-emerald-100 text-sm">Revenue</div>
+              <div className="text-emerald-100 text-sm">Total Readings</div>
             </div>
 
-            <div className="bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl p-6 text-white shadow-lg">
+            <div className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
               <div className="flex items-center justify-between mb-4">
-                <ShoppingCart className="w-8 h-8 opacity-80" />
-                <TrendingUp className="w-5 h-5 opacity-60" />
+                <AlertCircle className="w-8 h-8 opacity-80" />
+                <Activity className="w-5 h-5 opacity-60" />
               </div>
               <div className="text-3xl font-bold mb-1">
-                {dashboardData.metrics.orders?.toLocaleString() || 0}
+                {dashboardData.metrics.activeAlerts !== undefined ? dashboardData.metrics.activeAlerts : 0}
               </div>
-              <div className="text-pink-100 text-sm">Orders</div>
+              <div className="text-amber-100 text-sm">Active Alerts</div>
             </div>
           </div>
         )}

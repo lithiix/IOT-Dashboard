@@ -107,9 +107,9 @@ The dashboard displays data from your Firebase Realtime Database with this struc
     "lastUpdated": "2024-01-01T00:00:00.000Z",
     "status": "active",
     "metrics": {
-      "users": 1234,
-      "revenue": 56789,
-      "orders": 456
+      "totalDevices": 3,
+      "totalReadings": 8542,
+      "activeAlerts": 2
     }
   }
 }
@@ -193,11 +193,13 @@ Access your Firebase project at: https://console.firebase.google.com/project/lio
 ## Dependencies
 
 ### Core Dependencies
+
 - `next`: ^16.1.6 - React framework
 - `react`: ^19.2.4 - UI library
 - `firebase`: ^12.8.0 - Database and analytics
 
 ### UI Enhancement Dependencies
+
 - `recharts`: ^2.12.0 - Chart library for data visualization
 - `lucide-react`: ^0.344.0 - Beautiful icons
 - `tailwindcss`: ^4.0.0 - Utility-first CSS framework

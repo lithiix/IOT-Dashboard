@@ -59,14 +59,14 @@ const testData = {
     },
   },
 
-  // Dashboard system data
+  // Dashboard system data with IoT-specific metrics
   dashboard: {
     lastUpdated: new Date().toISOString(),
     status: "active",
     metrics: {
-      users: 1234,
-      revenue: 56789,
-      orders: 456,
+      totalDevices: 3, // Number of IoT devices connected
+      totalReadings: 8542, // Total sensor readings collected
+      activeAlerts: 2, // Number of active sensor alerts
     },
   },
 
