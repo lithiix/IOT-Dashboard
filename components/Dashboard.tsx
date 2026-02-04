@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRealtimeData, useRealtimeList, useFirebaseMutation } from '@/hooks/useFirebase';
 import {
   LineChart,
@@ -40,31 +40,53 @@ export default function Dashboard() {
   const { list: sensorLogs, loading: logsLoading } = useRealtimeList('lionbit/device01/logs');
   const { writeData } = useFirebaseMutation();
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'error'>('checking');
-  const [lastDataUpdate, setLastDataUpdate] = useState<number>(Date.now());
+  const [lastDataUpdate, setLastDataUpdate] = useState<number | null>(null);
+  const [pageLoadTime] = useState<number>(Date.now());
+  const previousLogsCountRef = useRef<number>(0);
 
-  // Track when sensor data changes (device is actively sending data)
+  // Track when NEW sensor data is added (not just page refresh)
   useEffect(() => {
     if (sensorLogs.length > 0) {
-      setLastDataUpdate(Date.now());
+      // Check if this is new data (count increased)
+      if (previousLogsCountRef.current > 0 && sensorLogs.length > previousLogsCountRef.current) {
+        // New data arrived!
+        setLastDataUpdate(Date.now());
+      } else if (previousLogsCountRef.current === 0 && sensorLogs.length > 0) {
+        // Initial load - check if it's fresh from current session or old data from Firebase
+        // Don't set timestamp yet, wait for actual new data
+      }
+      previousLogsCountRef.current = sensorLogs.length;
     }
-  }, [sensorLogs.length, JSON.stringify(sensorLogs[sensorLogs.length - 1])]);
+  }, [sensorLogs.length]);
 
-  // Monitor device connection based on data activity
+  // Monitor connection status with checking → online/offline logic
   useEffect(() => {
     const checkDeviceStatus = () => {
-      const timeSinceLastUpdate = Date.now() - lastDataUpdate;
-      const timeoutThreshold = 30000; // 30 seconds
+      const timeSincePageLoad = Date.now() - pageLoadTime;
 
-      if (loading || logsLoading) {
-        setConnectionStatus('checking');
-      } else if (error) {
-        setConnectionStatus('error');
-      } else if (sensorLogs.length === 0) {
-        setConnectionStatus('error'); // No data from device
-      } else if (timeSinceLastUpdate > timeoutThreshold) {
-        setConnectionStatus('error'); // Device stopped sending data
+      if (lastDataUpdate === null) {
+        // No new data received since page load
+        if (timeSincePageLoad > 60000) {
+          // 1 minute passed, no data → offline
+          setConnectionStatus('error');
+        } else {
+          // Still within 1 minute → checking
+          setConnectionStatus('checking');
+        }
       } else {
-        setConnectionStatus('connected'); // Device is active
+        // Data has been received at some point
+        const timeSinceLastData = Date.now() - lastDataUpdate;
+        
+        if (timeSinceLastData > 30000) {
+          // More than 30 seconds since last data → offline
+          setConnectionStatus('error');
+        } else if (timeSinceLastData > 10000) {
+          // Between 10-30 seconds since last data → checking
+          setConnectionStatus('checking');
+        } else {
+          // Data received within 10 seconds → online
+          setConnectionStatus('connected');
+        }
       }
     };
 
@@ -72,7 +94,7 @@ export default function Dashboard() {
     const interval = setInterval(checkDeviceStatus, 5000); // Check every 5 seconds
 
     return () => clearInterval(interval);
-  }, [loading, error, logsLoading, sensorLogs.length, lastDataUpdate]);
+  }, [lastDataUpdate, pageLoadTime]);
 
   const handleTestConnection = async () => {
     setConnectionStatus('checking');
@@ -91,20 +113,6 @@ export default function Dashboard() {
 
   // Get latest sensor reading
   const latestReading = sensorLogs.length > 0 ? sensorLogs[sensorLogs.length - 1] as SensorReading : null;
-
-  // Update connection status based on IoT device data availability
-  useEffect(() => {
-    if (loading || logsLoading) {
-      setConnectionStatus('checking');
-    } else if (error) {
-      setConnectionStatus('error');
-    } else if (sensorLogs.length > 0) {
-      // If we have sensor data from Firebase, device is connected
-      setConnectionStatus('connected');
-    } else {
-      setConnectionStatus('error'); // No data from device
-    }
-  }, [loading, error, logsLoading, sensorLogs.length]);
 
   // Prepare chart data from sensor logs
   const chartData = sensorLogs.slice(-20).map((log) => {
@@ -188,9 +196,9 @@ export default function Dashboard() {
             <div className="text-right">
               <div className="text-white text-sm">Last Device Online</div>
               <div className="text-purple-300 text-xs">
-                {latestReading
+                {lastDataUpdate
                   ? new Date(lastDataUpdate).toLocaleString()
-                  : 'Never'
+                  : 'Waiting for data...'
                 }
               </div>
             </div>
