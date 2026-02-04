@@ -16,6 +16,7 @@ A Next.js dashboard application that displays real-time data from Firebase Realt
 This project is configured to work with the **lionbit-test** Firebase project.
 
 ### Current Firebase Configuration:
+
 - **Project ID**: lionbit-test
 - **Database URL**: https://lionbit-test-default-rtdb.firebaseio.com
 - **Analytics**: Enabled
@@ -80,6 +81,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 The dashboard displays data from your Firebase Realtime Database with this structure:
 
 ### IoT Sensor Data
+
 ```json
 {
   "lionbit": {
@@ -98,6 +100,7 @@ The dashboard displays data from your Firebase Realtime Database with this struc
 ```
 
 ### Dashboard System Data
+
 ```json
 {
   "dashboard": {
@@ -115,36 +118,39 @@ The dashboard displays data from your Firebase Realtime Database with this struc
 ## Custom Hooks
 
 ### `useRealtimeData(path: string)`
+
 Fetches and listens to real-time data from a Firebase path.
 
 ```tsx
-const { data, loading, error } = useRealtimeData('dashboard');
+const { data, loading, error } = useRealtimeData("dashboard");
 ```
 
 ### `useRealtimeList(path: string)`
+
 Converts Firebase object data to an array with IDs.
 
 ```tsx
-const { list, loading, error } = useRealtimeList('items');
+const { list, loading, error } = useRealtimeList("items");
 ```
 
 ### `useFirebaseMutation()`
+
 Provides methods to write, update, and delete Firebase data.
 
 ```tsx
 const { writeData, pushData, updateData, deleteData } = useFirebaseMutation();
 
 // Write data
-await writeData('path/to/data', { key: 'value' });
+await writeData("path/to/data", { key: "value" });
 
 // Push new item
-await pushData('path/to/list', { item: 'data' });
+await pushData("path/to/list", { item: "data" });
 
 // Update existing data
-await updateData('path/to/data', { key: 'newValue' });
+await updateData("path/to/data", { key: "newValue" });
 
 // Delete data
-await deleteData('path/to/data');
+await deleteData("path/to/data");
 ```
 
 ## Dashboard Features
