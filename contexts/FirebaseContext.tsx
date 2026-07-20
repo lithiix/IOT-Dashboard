@@ -1,10 +1,11 @@
 'use client';
 
 import { createContext, useContext, ReactNode } from 'react';
-import { database } from '@/lib/firebase';
+import { database, isFirebaseConfigured } from '@/lib/firebase';
 
 interface FirebaseContextType {
   database: any;
+  isDemo: boolean;
 }
 
 const FirebaseContext = createContext<FirebaseContextType | undefined>(undefined);
@@ -15,7 +16,7 @@ interface FirebaseProviderProps {
 
 export function FirebaseProvider({ children }: FirebaseProviderProps) {
   return (
-    <FirebaseContext.Provider value={{ database }}>
+    <FirebaseContext.Provider value={{ database, isDemo: !isFirebaseConfigured }}>
       {children}
     </FirebaseContext.Provider>
   );

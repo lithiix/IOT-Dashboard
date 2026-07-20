@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import {
   Sprout,
@@ -16,49 +16,85 @@ import {
   RefreshCw
 } from 'lucide-react';
 
-export default function Home() {
+export default function LandingPage() {
+  
+  // Reusable Intersection Observer for scroll-reveal fade-in-up animations
+  useEffect(() => {
+    const revealElements = document.querySelectorAll('.reveal-on-scroll');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.05, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    revealElements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 overflow-x-hidden font-sans selection:bg-emerald-500 selection:text-slate-950">
+    <div className="min-h-screen bg-slate-950 text-slate-100 overflow-x-hidden font-sans relative selection:bg-emerald-500 selection:text-slate-950">
       
-      {/* Inject custom CSS keyframes for float & SVG plant animations */}
+      {/* Inject custom CSS keyframes for advanced animations */}
       <style>{`
         @keyframes float {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
           50% { transform: translateY(-12px) rotate(0.5deg); }
         }
-        @keyframes waterDrip {
-          0% { stroke-dashoffset: 0; }
-          100% { stroke-dashoffset: -32px; }
+        @keyframes pulseGlow {
+          0%, 100% { 
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2), 0 0 5px rgba(6, 182, 212, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+          }
+          50% { 
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.5), 0 0 15px rgba(6, 182, 212, 0.3);
+            border-color: rgba(6, 182, 212, 0.6);
+          }
         }
-        @keyframes swaySlow {
-          0%, 100% { transform: rotate(0deg); }
-          50% { transform: rotate(2.5deg); }
-        }
-        @keyframes swayMid {
-          0%, 100% { transform: rotate(0deg); }
-          50% { transform: rotate(-2deg); }
+        @keyframes ctaPulse {
+          0%, 100% {
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+            transform: scale(1);
+          }
+          50% {
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.6), 0 0 15px rgba(6, 182, 212, 0.3);
+            transform: scale(1.02);
+          }
         }
         .animate-float {
           animation: float 6s ease-in-out infinite;
         }
-        .animate-water-drip {
-          animation: waterDrip 1.5s linear infinite;
+        .animate-pulse-glow {
+          animation: pulseGlow 3.5s ease-in-out infinite;
         }
-        .animate-sway-slow {
-          animation: swaySlow 5s ease-in-out infinite;
+        .animate-cta-pulse {
+          animation: ctaPulse 4s ease-in-out infinite;
         }
-        .animate-sway-mid {
-          animation: swayMid 4s ease-in-out infinite;
+        .reveal-element {
+          opacity: 0;
+          transform: translateY(30px);
+          transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-element.visible {
+          opacity: 1;
+          transform: translateY(0);
         }
       `}</style>
 
-      {/* Background radial glow filters for premium ambient depth */}
-      <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-cyan-500/5 rounded-full blur-[100px] pointer-events-none -z-10" />
-      <div className="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
-      <div className="absolute bottom-[20%] left-10 w-[400px] h-[400px] bg-teal-500/5 rounded-full blur-[100px] pointer-events-none -z-10" />
+      {/* Large Neon Radial Glows behind Hero & Services */}
+      <div className="absolute top-[10%] right-[10%] w-[450px] h-[450px] bg-cyan-500/10 rounded-full blur-[110px] pointer-events-none -z-10 animate-pulse" />
+      <div className="absolute top-[40%] left-[5%] w-[550px] h-[550px] bg-emerald-500/10 rounded-full blur-[130px] pointer-events-none -z-10 animate-pulse" />
+      <div className="absolute bottom-[10%] right-[15%] w-[450px] h-[450px] bg-teal-500/10 rounded-full blur-[110px] pointer-events-none -z-10 animate-pulse" />
 
       {/* Header / Navigation */}
-      <header className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-white/5">
+      <header className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2 group">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform duration-200">
@@ -70,16 +106,16 @@ export default function Home() {
           </Link>
           
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#products" className="text-sm text-slate-350 hover:text-emerald-400 transition-colors duration-200">Products</a>
-            <a href="#services" className="text-sm text-slate-350 hover:text-emerald-400 transition-colors duration-200">Services</a>
-            <a href="#about" className="text-sm text-slate-350 hover:text-emerald-400 transition-colors duration-200">About Tech</a>
-            <a href="#contact" className="text-sm text-slate-350 hover:text-emerald-400 transition-colors duration-200">Contact</a>
+            <a href="#products" className="text-sm text-slate-300 hover:text-emerald-400 transition-colors duration-200">Products</a>
+            <a href="#services" className="text-sm text-slate-300 hover:text-emerald-400 transition-colors duration-200">Services</a>
+            <a href="#about" className="text-sm text-slate-300 hover:text-emerald-400 transition-colors duration-200">About Tech</a>
+            <a href="#contact" className="text-sm text-slate-300 hover:text-emerald-400 transition-colors duration-200">Contact</a>
           </nav>
 
           <div className="flex items-center space-x-4">
             <Link 
               href="/dashboard"
-              className="relative px-5 py-2.5 rounded-xl bg-slate-900 border border-white/5 text-sm font-semibold hover:border-emerald-500/50 hover:text-emerald-400 transition-all duration-200 shadow-md flex items-center group cursor-pointer"
+              className="relative px-5 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-sm font-semibold hover:border-emerald-500/50 hover:text-emerald-400 transition-all duration-200 shadow-md flex items-center group cursor-pointer"
             >
               <RefreshCw className="w-3.5 h-3.5 mr-2 animate-spin text-emerald-400 group-hover:text-emerald-300" />
               Live IoT Demo
@@ -113,14 +149,14 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
               <a 
                 href="#products"
-                className="px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-bold hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center cursor-pointer shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)]"
+                className="px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-bold hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center cursor-pointer animate-cta-pulse"
               >
                 Get Your Tower Now
                 <ArrowRight className="w-5 h-5 ml-2" />
               </a>
               <Link 
                 href="/dashboard"
-                className="px-8 py-4 rounded-xl bg-slate-900 border border-white/5 hover:border-slate-800 text-slate-100 font-semibold hover:bg-slate-900/60 transition-all duration-200 flex items-center justify-center cursor-pointer"
+                className="px-8 py-4 rounded-xl bg-slate-900 border border-white/10 hover:border-slate-700 text-slate-100 font-semibold hover:bg-slate-900/60 transition-all duration-200 flex items-center justify-center cursor-pointer"
               >
                 View Live Telemetry
               </Link>
@@ -143,91 +179,24 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Hero Product Image (Hydroponic Tower Card replicated precisely from image_fc8775.png) */}
+          {/* Hero Product Image (Hydroponic Tower Card exactly matching image_fc8775 layout description) */}
           <div className="lg:col-span-5 relative flex justify-center">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-cyan-500/10 rounded-full blur-[100px] -z-10" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-emerald-500/20 rounded-full blur-[100px] -z-10" />
             
-            <div className="bg-[#070e17] border border-cyan-500/30 rounded-[28px] p-5 shadow-[0_0_20px_rgba(6,182,212,0.15)] w-full max-w-[440px] relative overflow-hidden group animate-float">
+            <div className="bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-3xl p-4 w-full max-w-[380px] shadow-2xl relative overflow-hidden group animate-float animate-pulse-glow">
+              <div className="absolute inset-0 bg-gradient-to-t from-emerald-500/10 to-transparent pointer-events-none" />
               
-              <div className="w-full h-[420px] rounded-2xl border border-white/5 bg-slate-950/80 flex items-center justify-center p-4 relative overflow-hidden group-hover:scale-[1.01] transition-transform duration-500">
-                <svg viewBox="0 0 200 400" className="w-full h-full select-none pointer-events-none">
-                  <defs>
-                    <linearGradient id="towerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#0f172a" />
-                      <stop offset="50%" stopColor="#1e293b" />
-                      <stop offset="100%" stopColor="#0f172a" />
-                    </linearGradient>
-                    <linearGradient id="waterFlow" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#06b6d4" />
-                      <stop offset="100%" stopColor="#3b82f6" />
-                    </linearGradient>
-                  </defs>
+              <img 
+                src="https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=600" 
+                alt="Sleek vertical smart indoor hydroponic tower" 
+                className="w-full h-[320px] object-cover rounded-2xl border border-slate-800/80 group-hover:scale-[1.01] transition-transform duration-500"
+              />
 
-                  {/* Tower Main Structure */}
-                  <rect x="85" y="40" width="30" height="320" rx="6" fill="url(#towerGrad)" stroke="#334155" strokeWidth="2" />
-                  <rect x="75" y="350" width="50" height="15" rx="4" fill="#1e293b" stroke="#334155" strokeWidth="2" />
-
-                  {/* Water Flow Animation Line */}
-                  <line x1="100" y1="45" x2="100" y2="350" stroke="url(#waterFlow)" strokeWidth="2.5" strokeDasharray="8 8" className="animate-water-drip" />
-
-                  {/* Hanging Pots/Leaves Level 1 */}
-                  <g className="animate-sway-slow transform origin-[75px_100px]">
-                    <path d="M75 100 L55 100 L60 115 L70 115 Z" fill="#0f172a" stroke="#06b6d4" strokeWidth="1.5" />
-                    <path d="M50 95 C45 80, 60 85, 65 100 C70 85, 80 80, 75 95 Z" fill="#22c55e" opacity="0.9" />
-                    <circle cx="62" cy="100" r="2" fill="#06b6d4" className="animate-ping" />
-                  </g>
-
-                  <g className="animate-sway-mid transform origin-[125px_130px]">
-                    <path d="M125 130 L145 130 L140 145 L130 145 Z" fill="#0f172a" stroke="#06b6d4" strokeWidth="1.5" />
-                    <path d="M140 125 C145 110, 130 115, 125 130 C120 115, 110 110, 115 125 Z" fill="#22c55e" opacity="0.9" />
-                    <circle cx="135" cy="130" r="2" fill="#22c55e" className="animate-ping" />
-                  </g>
-
-                  {/* Level 2 */}
-                  <g className="animate-sway-mid transform origin-[75px_190px]">
-                    <path d="M75 190 L55 190 L60 205 L70 205 Z" fill="#0f172a" stroke="#06b6d4" strokeWidth="1.5" />
-                    <path d="M50 185 C45 170, 60 175, 65 190 C70 175, 80 170, 75 185 Z" fill="#22c55e" opacity="0.9" />
-                    <circle cx="62" cy="190" r="2" fill="#22c55e" className="animate-ping" />
-                  </g>
-
-                  <g className="animate-sway-slow transform origin-[125px_220px]">
-                    <path d="M125 220 L145 220 L140 235 L130 235 Z" fill="#0f172a" stroke="#06b6d4" strokeWidth="1.5" />
-                    <path d="M140 215 C145 200, 130 205, 125 220 C120 205, 110 200, 115 215 Z" fill="#22c55e" opacity="0.9" />
-                    <circle cx="135" cy="220" r="2" fill="#06b6d4" className="animate-ping" />
-                  </g>
-
-                  {/* Level 3 */}
-                  <g className="animate-sway-slow transform origin-[75px_280px]">
-                    <path d="M75 280 L55 280 L60 295 L70 295 Z" fill="#0f172a" stroke="#06b6d4" strokeWidth="1.5" />
-                    <path d="M50 275 C45 260, 60 265, 65 280 C70 265, 80 260, 75 275 Z" fill="#22c55e" opacity="0.9" />
-                    <circle cx="62" cy="280" r="2" fill="#06b6d4" className="animate-ping" />
-                  </g>
-
-                  <g className="animate-sway-mid transform origin-[125px_310px]">
-                    <path d="M125 310 L145 310 L140 325 L130 325 Z" fill="#0f172a" stroke="#06b6d4" strokeWidth="1.5" />
-                    <path d="M140 305 C145 290, 130 295, 125 310 C120 295, 110 290, 115 305 Z" fill="#22c55e" opacity="0.9" />
-                    <circle cx="135" cy="310" r="2" fill="#22c55e" className="animate-ping" />
-                  </g>
-
-                  {/* Glowing LED grow lights bars */}
-                  <line x1="40" y1="50" x2="40" y2="330" stroke="#06b6d4" strokeWidth="1.5" opacity="0.5" strokeDasharray="3 3" />
-                  <line x1="160" y1="50" x2="160" y2="330" stroke="#06b6d4" strokeWidth="1.5" opacity="0.5" strokeDasharray="3 3" />
-                  
-                  <circle cx="40" cy="50" r="3" fill="#06b6d4" className="animate-pulse" />
-                  <circle cx="40" cy="190" r="3" fill="#06b6d4" className="animate-pulse" />
-                  <circle cx="40" cy="330" r="3" fill="#06b6d4" className="animate-pulse" />
-                  
-                  <circle cx="160" cy="50" r="3" fill="#06b6d4" className="animate-pulse" />
-                  <circle cx="160" cy="190" r="3" fill="#06b6d4" className="animate-pulse" />
-                  <circle cx="160" cy="330" r="3" fill="#06b6d4" className="animate-pulse" />
-                </svg>
-              </div>
-
-              <div className="flex items-center justify-between border-t border-slate-800/80 pt-4 mt-4 text-xs font-semibold">
-                <div className="text-slate-500">Device ID: <span className="text-emerald-450 font-mono text-[13px] font-bold">GCC-TWR01</span></div>
-                <div className="flex items-center text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-lg bg-emerald-500/5">
-                  <RefreshCw className="w-3.5 h-3.5 mr-1.5 animate-spin text-emerald-400" />
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 mr-1.5 animate-pulse shadow-[0_0_6px_rgba(16,185,129,0.7)]" />
+              <div className="flex items-center justify-between border-t border-white/10 pt-4 mt-4">
+                <div className="text-xs text-slate-500">Device ID: <span className="text-emerald-400 font-mono">GCC-TWR01</span></div>
+                <div className="flex items-center text-xs text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">
+                  <RefreshCw className="w-3.5 h-3.5 mr-1.5 animate-spin text-emerald-500" />
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 mr-1.5 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
                   Telemetry Streaming
                 </div>
               </div>
@@ -238,9 +207,9 @@ export default function Home() {
       </section>
 
       {/* Features / Value Proposition Grid (Clean 3-Column Layout) */}
-      <section id="about" className="py-24 bg-slate-900/30 border-y border-white/5 px-6">
+      <section id="about" className="py-24 bg-slate-900/30 border-y border-white/10 px-6">
         <div className="max-w-7xl mx-auto space-y-16">
-          <div className="text-center space-y-4">
+          <div className="text-center space-y-4 reveal-on-scroll reveal-element">
             <h2 className="text-emerald-400 text-sm font-bold uppercase tracking-widest">Our Engineering</h2>
             <p className="text-3xl md:text-4xl font-extrabold text-white">Smart Farming Hardware, Optimized by Software</p>
             <p className="text-slate-400 max-w-xl mx-auto text-base">
@@ -252,9 +221,9 @@ export default function Home() {
             
             {/* Feature 1: Smart Hydroponic Towers */}
             <div 
-              className="bg-[#070e17] border border-white/5 hover:border-emerald-500/30 rounded-3xl p-8 hover:-translate-y-1 transition-all duration-300 group shadow-md"
+              className="bg-slate-900/40 backdrop-blur-md border border-white/10 hover:border-emerald-500/30 rounded-3xl p-8 hover:-translate-y-1 transition-all duration-300 group shadow-md reveal-on-scroll reveal-element"
             >
-              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all duration-300">
+              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all duration-300 animate-pulse-glow">
                 <Sprout className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold text-white mb-3">Smart Hydroponic Towers</h3>
@@ -265,10 +234,10 @@ export default function Home() {
 
             {/* Feature 2: Real-time Plant Monitoring */}
             <div 
-              className="bg-[#070e17] border border-white/5 hover:border-emerald-500/30 rounded-3xl p-8 hover:-translate-y-1 transition-all duration-300 group shadow-md"
+              className="bg-slate-900/40 backdrop-blur-md border border-white/10 hover:border-emerald-500/30 rounded-3xl p-8 hover:-translate-y-1 transition-all duration-300 group shadow-md reveal-on-scroll reveal-element"
             >
-              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all duration-300">
-                <Activity className="w-6 h-6" />
+              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all duration-300 animate-pulse-glow">
+                <Activity className="w-6 h-6 animate-pulse" />
               </div>
               <h3 className="text-lg font-bold text-white mb-3">Real-time Plant Monitoring</h3>
               <p className="text-sm text-slate-450 leading-relaxed">
@@ -278,9 +247,9 @@ export default function Home() {
 
             {/* Feature 3: AI Growth Recommendations */}
             <div 
-              className="bg-[#070e17] border border-white/5 hover:border-emerald-500/30 rounded-3xl p-8 hover:-translate-y-1 transition-all duration-300 group shadow-md"
+              className="bg-slate-900/40 backdrop-blur-md border border-white/10 hover:border-emerald-500/30 rounded-3xl p-8 hover:-translate-y-1 transition-all duration-300 group shadow-md reveal-on-scroll reveal-element"
             >
-              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all duration-300">
+              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all duration-300 animate-pulse-glow">
                 <Cpu className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold text-white mb-3">AI Growth Recommendations</h3>
@@ -297,7 +266,7 @@ export default function Home() {
       <section id="services" className="py-24 px-6 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
           
-          <div className="lg:col-span-6 space-y-8">
+          <div className="lg:col-span-6 space-y-8 reveal-on-scroll reveal-element">
             <div className="space-y-4">
               <h2 className="text-emerald-400 text-sm font-bold uppercase tracking-widest">Worry-Free Operations</h2>
               <h3 className="text-3xl md:text-5xl font-extrabold text-white leading-tight">Full-Service Maintenance & Installation</h3>
@@ -333,50 +302,51 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Clean 2-Card Image Layout matching reference designs (Precise image_fc8775 formatting) */}
-          <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* Clean 2-Card Image Layout matching reference designs (Scroll Reveal & Glassmorphism) */}
+          <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-6 reveal-on-scroll reveal-element">
             
             {/* Image 1 Card: Smart Monitoring Setup */}
-            <div className="bg-[#070e17] border border-cyan-500/30 rounded-[28px] p-5 shadow-[0_0_15px_rgba(6,182,212,0.15)] group">
+            <div className="bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-3xl p-4 hover:border-emerald-500/20 transition-all duration-300 shadow-lg animate-pulse-glow">
               <img 
                 src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?q=80&w=600" 
                 alt="Green plants growing inside futuristic indoor farm" 
                 className="w-full h-[200px] object-cover rounded-2xl border border-white/5"
               />
-              <div className="flex items-center justify-between border-t border-slate-800/80 pt-4 mt-4 text-xs font-semibold">
-                <div className="text-slate-500">Device ID: <span className="text-emerald-450 font-mono">GCC-MON01</span></div>
-                <div className="flex items-center text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-lg bg-emerald-500/5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse" />
-                  Live Stream
+              <div className="flex items-center justify-between mt-4 px-1">
+                <span className="text-xs text-slate-400 font-bold">IoT Sensor Stream</span>
+                <div className="flex items-center text-xs text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                  <RefreshCw className="w-3 h-3 animate-spin mr-1 text-emerald-500" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse" />
+                  Live
                 </div>
               </div>
             </div>
 
             {/* Image 2 Card: AI Recommendation Setup */}
-            <div className="bg-[#070e17] border border-cyan-500/30 rounded-[28px] p-5 shadow-[0_0_15px_rgba(6,182,212,0.15)] group">
+            <div className="bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-3xl p-4 hover:border-teal-500/20 transition-all duration-300 shadow-lg animate-pulse-glow">
               <img 
                 src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?q=80&w=600" 
                 alt="Lush leafy greens inside automated urban farming facility" 
                 className="w-full h-[200px] object-cover rounded-2xl border border-white/5"
               />
-              <div className="flex items-center justify-between border-t border-slate-800/80 pt-4 mt-4 text-xs font-semibold">
-                <div className="text-slate-500">Device ID: <span className="text-emerald-450 font-mono">GCC-AUTO01</span></div>
-                <div className="flex items-center text-teal-400 border border-teal-500/30 px-3 py-1.5 rounded-lg bg-teal-500/5">
-                  <RefreshCw className="w-3.5 h-3.5 mr-1.5 animate-spin text-teal-500" />
-                  <span className="w-2 h-2 rounded-full bg-teal-500 mr-1.5 animate-pulse" />
-                  Active
+              <div className="flex items-center justify-between mt-4 px-1">
+                <span className="text-xs text-slate-400 font-bold">AI Growth Advice</span>
+                <div className="flex items-center text-xs text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/20">
+                  <RefreshCw className="w-3 h-3 animate-spin mr-1 text-teal-500" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-teal-500 mr-1 animate-pulse" />
+                  Optimal
                 </div>
               </div>
             </div>
 
             {/* Warranty and Nutrient Pod Details (Full width row) */}
             <div className="sm:col-span-2 grid grid-cols-2 gap-4">
-              <div className="bg-slate-900/30 border border-white/5 rounded-xl p-5 hover:border-emerald-500/10 transition-colors">
+              <div className="bg-slate-900/30 backdrop-blur-md border border-white/10 rounded-xl p-5 hover:border-emerald-500/10 transition-colors">
                 <ShieldCheck className="w-6 h-6 text-emerald-400 mb-1" />
                 <h5 className="text-slate-200 font-bold text-sm">2-Year Warranty</h5>
                 <p className="text-xs text-slate-400 mt-1">Covers all hydroponic pumps and sensor modules.</p>
               </div>
-              <div className="bg-slate-900/30 border border-white/5 rounded-xl p-5 hover:border-emerald-500/10 transition-colors">
+              <div className="bg-slate-900/30 backdrop-blur-md border border-white/10 rounded-xl p-5 hover:border-emerald-500/10 transition-colors">
                 <FlaskConical className="w-6 h-6 text-teal-400 mb-1" />
                 <h5 className="text-slate-200 font-bold text-sm">GCC Nutrient Pods</h5>
                 <p className="text-xs text-slate-400 mt-1">Bimonthly liquid nutrient replenishment packs.</p>
@@ -390,7 +360,7 @@ export default function Home() {
 
       {/* Call to Action (CTA) Banner */}
       <section id="contact" className="py-20 px-6 max-w-7xl mx-auto">
-        <div className="relative rounded-3xl bg-gradient-to-tr from-emerald-950 via-slate-900 to-indigo-950 border border-white/5 p-8 md:p-16 text-center space-y-8 overflow-hidden shadow-2xl">
+        <div className="relative rounded-3xl bg-gradient-to-tr from-emerald-950 via-slate-900 to-indigo-950 border border-white/10 p-8 md:p-16 text-center space-y-8 overflow-hidden shadow-2xl reveal-on-scroll reveal-element">
           <div className="absolute -top-32 -left-32 w-80 h-80 bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none" />
           <div className="absolute -bottom-32 -right-32 w-80 h-80 bg-indigo-500/10 rounded-full blur-[80px] pointer-events-none" />
           
@@ -402,12 +372,12 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-            <button className="w-full sm:w-auto px-8 py-4 rounded-xl bg-emerald-500 text-slate-950 font-bold hover:bg-emerald-400 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+            <button className="w-full sm:w-auto px-8 py-4 rounded-xl bg-emerald-500 text-slate-950 font-bold hover:bg-emerald-400 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer animate-cta-pulse">
               Book a Consultation
             </button>
             <Link 
               href="/dashboard"
-              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-800 border border-white/5 hover:border-emerald-500/40 text-emerald-400 font-semibold flex items-center justify-center hover:scale-105 transition-all duration-200 cursor-pointer"
+              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-800 border border-white/10 hover:border-emerald-500/40 text-emerald-400 font-semibold flex items-center justify-center hover:scale-105 transition-all duration-200 cursor-pointer"
             >
               <Activity className="w-4 h-4 mr-2" />
               View Live Telemetry
