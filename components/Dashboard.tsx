@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { useRealtimeData, useRealtimeList, useFirebaseMutation } from '@/hooks/useFirebase';
 import { useFirebase } from '@/contexts/FirebaseContext';
 import {
@@ -25,7 +26,8 @@ import {
   CheckCircle,
   AlertCircle,
   Wifi,
-  WifiOff
+  WifiOff,
+  ShieldCheck
 } from 'lucide-react';
 
 interface SensorReading {
@@ -176,6 +178,13 @@ export default function Dashboard() {
             <p className="text-purple-300">Real-time water quality and environmental monitoring</p>
           </div>
           <div className="flex items-center space-x-4">
+            <Link
+              href="/admin"
+              className="px-4 py-2 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500 hover:text-slate-950 font-semibold text-xs transition-all flex items-center space-x-1.5 shadow-md"
+            >
+              <ShieldCheck className="w-4 h-4" />
+              <span>Admin Panel</span>
+            </Link>
             <div className="flex items-center space-x-2 bg-slate-800/50 backdrop-blur-sm rounded-lg px-4 py-2">
               {getConnectionIcon()}
               <span className="text-white text-sm">

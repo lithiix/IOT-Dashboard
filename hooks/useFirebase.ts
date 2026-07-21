@@ -29,6 +29,130 @@ const mockDatabaseState: any = {
         "-OkXCiWQhcGEOwy7FpwX": { ph: 7.2, ec: 450, oxygen: 8.2, waterTemp: 22.5, envTemp: 26.8, envHumidity: 63, time: 6371 }
       }
     }
+  },
+  customers: {
+    "cust_001": {
+      id: "cust_001",
+      name: "Green Horizon Aquaponics",
+      email: "contact@greenhorizon.io",
+      contactPerson: "Sarah Jenkins",
+      phone: "+1 (555) 234-5678",
+      status: "approved",
+      registeredAt: "2026-07-10T09:30:00.000Z",
+      facilityType: "Commercial Hydroponic Farm",
+      location: "San Jose, CA",
+      circuits: ["lionbit/device01", "CRCT-9012-B"],
+      notes: "High priority commercial client. Operating 12 greenhouse bays."
+    },
+    "cust_002": {
+      id: "cust_002",
+      name: "Apex BioTech Farms",
+      email: "admin@apexbiotech.com",
+      contactPerson: "Marcus Vance",
+      phone: "+1 (555) 891-2345",
+      status: "pending",
+      registeredAt: "2026-07-20T14:15:00.000Z",
+      facilityType: "Research Greenhouse",
+      location: "Austin, TX",
+      circuits: [],
+      notes: "Requested activation for 3 new sensor circuits."
+    },
+    "cust_003": {
+      id: "cust_003",
+      name: "Urban Leaf Cultivation",
+      email: "ops@urbanleaf.org",
+      contactPerson: "Elena Rostova",
+      phone: "+1 (555) 678-9012",
+      status: "pending",
+      registeredAt: "2026-07-21T08:45:00.000Z",
+      facilityType: "Vertical Indoor Farm",
+      location: "Denver, CO",
+      circuits: [],
+      notes: "Pending business verification and circuit assignment."
+    },
+    "cust_004": {
+      id: "cust_004",
+      name: "Solaris Agricultural Labs",
+      email: "info@solarisagri.com",
+      contactPerson: "David Thorne",
+      phone: "+1 (555) 432-1098",
+      status: "approved",
+      registeredAt: "2026-07-15T11:20:00.000Z",
+      facilityType: "Research Facility",
+      location: "Seattle, WA",
+      circuits: ["CRCT-3341-S"],
+      notes: "Approved under Enterprise tier."
+    },
+    "cust_005": {
+      id: "cust_005",
+      name: "Verdant Sprout Operations",
+      email: "support@verdantsprout.net",
+      contactPerson: "Chloe Bennett",
+      phone: "+1 (555) 987-6543",
+      status: "rejected",
+      registeredAt: "2026-07-18T16:00:00.000Z",
+      facilityType: "Small Holding",
+      location: "Portland, OR",
+      circuits: [],
+      notes: "Incomplete documentation and invalid tax registration ID."
+    }
+  },
+  circuits: {
+    "lionbit/device01": {
+      id: "lionbit/device01",
+      circuitId: "CRCT-1001-ALPHA",
+      name: "Main Hydroponics Controller Node 01",
+      model: "Gravity Sensor Unit v3",
+      assignedCustomerId: "cust_001",
+      assignedCustomerName: "Green Horizon Aquaponics",
+      status: "online",
+      location: "Greenhouse Bay 1",
+      registeredAt: "2026-07-10T10:00:00.000Z"
+    },
+    "CRCT-9012-B": {
+      id: "CRCT-9012-B",
+      circuitId: "CRCT-9012-B",
+      name: "Reservoir Telemetry Board B2",
+      model: "Gravity EC/pH Pro Node",
+      assignedCustomerId: "cust_001",
+      assignedCustomerName: "Green Horizon Aquaponics",
+      status: "online",
+      location: "Nutrient Tank 2",
+      registeredAt: "2026-07-12T13:45:00.000Z"
+    },
+    "CRCT-3341-S": {
+      id: "CRCT-3341-S",
+      circuitId: "CRCT-3341-S",
+      name: "Climate Monitor Unit S1",
+      model: "Gravity Temp/Humidity Array",
+      assignedCustomerId: "cust_004",
+      assignedCustomerName: "Solaris Agricultural Labs",
+      status: "online",
+      location: "Lab Room 4",
+      registeredAt: "2026-07-15T12:00:00.000Z"
+    },
+    "CRCT-7788-U": {
+      id: "CRCT-7788-U",
+      circuitId: "CRCT-7788-U",
+      name: "Unassigned Smart Sensor Board U1",
+      model: "Gravity Universal IoT Node",
+      assignedCustomerId: null,
+      assignedCustomerName: null,
+      status: "unassigned",
+      location: "Warehouse Inventory",
+      registeredAt: "2026-07-19T10:00:00.000Z"
+    },
+    "CRCT-5544-X": {
+      id: "CRCT-5544-X",
+      circuitId: "CRCT-5544-X",
+      name: "Unassigned Dissolved Oxygen Sensor X4",
+      model: "Gravity DO Precision Node",
+      assignedCustomerId: null,
+      assignedCustomerName: null,
+      status: "unassigned",
+      location: "Warehouse Inventory",
+      registeredAt: "2026-07-20T09:15:00.000Z"
+    }
   }
 };
 
