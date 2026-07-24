@@ -169,32 +169,32 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      <div className="max-w-7xl mx-auto p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-x-hidden">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 sm:mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2">IoT Aqua & Weather Dashboard</h1>
-            <p className="text-purple-300">Real-time water quality and environmental monitoring</p>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1 sm:mb-2">IoT Aqua & Weather Dashboard</h1>
+            <p className="text-sm sm:text-base text-purple-300">Real-time water quality and environmental monitoring</p>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             <Link
               href="/admin"
-              className="px-4 py-2 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500 hover:text-slate-950 font-semibold text-xs transition-all flex items-center space-x-1.5 shadow-md"
+              className="px-3.5 py-2 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500 hover:text-slate-950 font-semibold text-xs transition-all flex items-center space-x-1.5 shadow-md"
             >
               <ShieldCheck className="w-4 h-4" />
               <span>Admin Panel</span>
             </Link>
-            <div className="flex items-center space-x-2 bg-slate-800/50 backdrop-blur-sm rounded-lg px-4 py-2">
+            <div className="flex items-center space-x-2 bg-slate-800/50 backdrop-blur-sm rounded-lg px-3.5 py-2">
               {getConnectionIcon()}
-              <span className="text-white text-sm">
+              <span className="text-white text-xs sm:text-sm font-medium">
                 {connectionStatus === 'connected' ? 'Device Online' :
                  connectionStatus === 'error' ? 'Device Offline' : 'Checking...'}
               </span>
             </div>
-            <div className="text-right">
-              <div className="text-white text-sm">Last Device Online</div>
-              <div className="text-purple-300 text-xs">
+            <div className="text-left sm:text-right">
+              <div className="text-white text-xs sm:text-sm">Last Device Online</div>
+              <div className="text-purple-300 text-[11px] sm:text-xs">
                 {lastDataUpdate
                   ? new Date(lastDataUpdate).toLocaleString()
                   : 'Waiting for data...'
@@ -206,7 +206,7 @@ export default function Dashboard() {
 
         {/* Demo Mode Banner */}
         {isDemo && (
-          <div className="mb-8 bg-amber-500/10 border border-amber-500/20 backdrop-blur-md rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="mb-6 sm:mb-8 bg-amber-500/10 border border-amber-500/20 backdrop-blur-md rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-start space-x-3">
               <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
               <div>
@@ -223,7 +223,7 @@ export default function Dashboard() {
         )}
 
         {/* 6 Sensor Metrics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {/* Card 1: pH */}
           <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
             <div className="flex items-center justify-between mb-4">
@@ -304,7 +304,7 @@ export default function Dashboard() {
         </div>
 
         {/* Graphs Section - 6 Independent Area Charts in a Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {/* Chart 1: pH Level */}
           <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700 shadow-md">
             <h3 className="text-white text-lg font-semibold mb-4 flex items-center">
@@ -636,7 +636,7 @@ export default function Dashboard() {
         </div>
 
         {/* IoT System Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
             <div className="flex items-center justify-between mb-4">
               <Activity className="w-8 h-8 opacity-80" />

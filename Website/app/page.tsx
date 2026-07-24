@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import {
   Sprout,
@@ -13,10 +13,15 @@ import {
   FlaskConical,
   Compass,
   Droplet,
-  RefreshCw
+  RefreshCw,
+  Smartphone,
+  Menu,
+  X
 } from 'lucide-react';
 
 export default function Home() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 overflow-x-hidden font-sans selection:bg-emerald-500 selection:text-slate-950">
       
@@ -59,24 +64,24 @@ export default function Home() {
 
       {/* Header / Navigation */}
       <header className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform duration-200">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform duration-200 shrink-0">
               <Sprout className="w-6 h-6 text-slate-950" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-white via-slate-100 to-emerald-400 bg-clip-text text-transparent">
+            <span className="text-base sm:text-xl font-bold bg-gradient-to-r from-white via-slate-100 to-emerald-400 bg-clip-text text-transparent truncate">
               Gravity Core Cultivation
             </span>
           </Link>
           
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden lg:flex items-center space-x-8">
             <a href="#products" className="text-sm text-slate-350 hover:text-emerald-400 transition-colors duration-200">Products</a>
             <a href="#services" className="text-sm text-slate-350 hover:text-emerald-400 transition-colors duration-200">Services</a>
             <a href="#about" className="text-sm text-slate-350 hover:text-emerald-400 transition-colors duration-200">About Tech</a>
             <a href="#contact" className="text-sm text-slate-350 hover:text-emerald-400 transition-colors duration-200">Contact</a>
           </nav>
 
-          <div className="flex items-center space-x-3">
+          <div className="hidden sm:flex items-center space-x-3">
             <Link
               href="/admin"
               className="px-4 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-sm font-semibold text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 transition-all duration-200 shadow-md flex items-center group cursor-pointer"
@@ -92,21 +97,87 @@ export default function Home() {
               Live IoT Demo
             </Link>
           </div>
+
+          {/* Mobile Navigation Toggle Button */}
+          <div className="flex sm:hidden items-center space-x-2">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2.5 rounded-xl bg-slate-900 border border-white/10 text-slate-200 hover:text-emerald-400 focus:outline-none"
+              aria-label="Toggle Navigation Menu"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Navigation Dropdown Drawer */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden bg-slate-950/95 border-b border-white/10 px-6 py-6 space-y-4 animate-in slide-in-from-top-4">
+            <nav className="flex flex-col space-y-3 pb-4 border-b border-white/5">
+              <a
+                href="#products"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors"
+              >
+                Products
+              </a>
+              <a
+                href="#services"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors"
+              >
+                Services
+              </a>
+              <a
+                href="#about"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors"
+              >
+                About Tech
+              </a>
+              <a
+                href="#contact"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors"
+              >
+                Contact
+              </a>
+            </nav>
+
+            <div className="flex flex-col space-y-3 pt-2">
+              <Link
+                href="/admin"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-sm font-semibold text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 transition-all flex items-center justify-center"
+              >
+                <ShieldCheck className="w-4 h-4 mr-2" />
+                Admin Panel
+              </Link>
+              <Link
+                href="/dashboard"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-white/10 text-sm font-semibold text-slate-200 hover:text-emerald-400 transition-all flex items-center justify-center"
+              >
+                <RefreshCw className="w-4 h-4 mr-2 animate-spin text-emerald-400" />
+                Live IoT Demo
+              </Link>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Hero Section */}
-      <section className="relative pt-16 pb-24 md:pt-24 md:pb-32 px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+      <section className="relative pt-12 pb-20 md:pt-24 md:pb-32 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           
           {/* Hero Content */}
-          <div className="lg:col-span-7 text-center lg:text-left space-y-8">
+          <div className="lg:col-span-7 text-center lg:text-left space-y-6 sm:space-y-8">
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
               <Zap className="w-3.5 h-3.5 animate-pulse" />
               <span>Next-Gen Hydroponic Systems</span>
             </div>
             
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-none tracking-tight">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight tracking-tight">
               Cultivate the Future with{' '}
               <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-indigo-400 bg-clip-text text-transparent">
                 Gravity-Defying Tech
