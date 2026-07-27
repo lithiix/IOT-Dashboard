@@ -1,0 +1,5 @@
+- [x] Step 1: Add Flutter to System PATH
+- [x] Step 2: Install Android SDK Command-line Tools in Android Studio
+- [x] Step 3: Accept Android Licenses
+- [x] Step 4: Verify Environment with `flutter doctor`
+- [ ] Step 5: Run the application on Android Emulator

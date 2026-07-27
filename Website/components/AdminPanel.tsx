@@ -46,14 +46,14 @@ export interface Customer {
   registeredAt: string;
   facilityType: string;
   location: string;
-  circuits?: string[];
+  devices?: string[];
   notes?: string;
   rejectionReason?: string;
 }
 
-export interface Circuit {
+export interface Device {
   id: string;
-  circuitId: string;
+  deviceId: string;
   name: string;
   model: string;
   assignedCustomerId?: string | null;
@@ -87,11 +87,11 @@ export default function AdminPanel() {
 
   // Firebase Realtime Hooks
   const { data: rawCustomers, loading: loadingCustomers } = useRealtimeData('customers');
-  const { data: rawCircuits, loading: loadingCircuits } = useRealtimeData('circuits');
+  const { data: rawDevices, loading: loadingDevices } = useRealtimeData('devices');
   const { updateData, writeData } = useFirebaseMutation();
 
   // Navigation & UI States
-  const [activeTab, setActiveTab] = useState<'customers' | 'circuits'>('customers');
+  const [activeTab, setActiveTab] = useState<'customers' | 'devices'>('customers');
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
@@ -103,13 +103,13 @@ export default function AdminPanel() {
   const [rejectingCustomerId, setRejectingCustomerId] = useState<string | null>(null);
   const [rejectionReasonInput, setRejectionReasonInput] = useState('');
 
-  // Add Circuit Modal State
-  const [showAddCircuitModal, setShowAddCircuitModal] = useState(false);
-  const [newCircuitId, setNewCircuitId] = useState('');
-  const [newCircuitName, setNewCircuitName] = useState('');
-  const [newCircuitModel, setNewCircuitModel] = useState('Gravity IoT Controller v2');
-  const [newCircuitLocation, setNewCircuitLocation] = useState('Greenhouse Bay A');
-  const [newCircuitCustomerTarget, setNewCircuitCustomerTarget] = useState<string>('');
+  // Add Device Modal State
+  const [showAddDeviceModal, setShowAddDeviceModal] = useState(false);
+  const [newDeviceId, setNewDeviceId] = useState('');
+  const [newDeviceName, setNewDeviceName] = useState('');
+  const [newDeviceModel, setNewDeviceModel] = useState('Gravity IoT Controller v2');
+  const [newDeviceLocation, setNewDeviceLocation] = useState('Greenhouse Bay A');
+  const [newDeviceCustomerTarget, setNewDeviceCustomerTarget] = useState<string>('');
 
   // Toast Notification State
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'info' | 'error' } | null>(null);
@@ -162,8 +162,8 @@ export default function AdminPanel() {
       }))
     : [];
 
-  const circuitsList: Circuit[] = rawCircuits
-    ? Object.entries(rawCircuits).map(([key, val]: [string, any]) => ({
+  const devicesList: Device[] = rawDevices
+    ? Object.entries(rawDevices).map(([key, val]: [string, any]) => ({
         id: key,
         ...val
       }))
@@ -173,8 +173,8 @@ export default function AdminPanel() {
   const totalCustomers = customersList.length;
   const pendingCount = customersList.filter(c => c.status === 'pending').length;
   const approvedCount = customersList.filter(c => c.status === 'approved').length;
-  const totalCircuits = circuitsList.length;
-  const unassignedCircuits = circuitsList.filter(c => !c.assignedCustomerId || c.status === 'unassigned').length;
+  const totalDevices = devicesList.length;
+  const unassignedDevices = devicesList.filter(c => !c.assignedCustomerId || c.status === 'unassigned').length;
 
   // Filtered customer list
   const filteredCustomers = customersList.filter(customer => {
@@ -190,15 +190,15 @@ export default function AdminPanel() {
     return matchesFilter && matchesQuery;
   });
 
-  // Filtered circuit list
-  const filteredCircuits = circuitsList.filter(circuit => {
+  // Filtered device list
+  const filteredDevices = devicesList.filter(device => {
     const q = searchQuery.toLowerCase();
     return (
       !q ||
-      circuit.circuitId.toLowerCase().includes(q) ||
-      circuit.id.toLowerCase().includes(q) ||
-      circuit.name.toLowerCase().includes(q) ||
-      (circuit.assignedCustomerName && circuit.assignedCustomerName.toLowerCase().includes(q))
+      (device.deviceId && device.deviceId.toLowerCase().includes(q)) ||
+      device.id.toLowerCase().includes(q) ||
+      device.name.toLowerCase().includes(q) ||
+      (device.assignedCustomerName && device.assignedCustomerName.toLowerCase().includes(q))
     );
   });
 
@@ -246,108 +246,108 @@ export default function AdminPanel() {
     }
   };
 
-  // Handle Connect Circuit ID to Customer
-  const handleConnectCircuit = async (circuitKey: string, targetCustomerId: string) => {
+  // Handle Connect Device ID to Customer
+  const handleConnectDevice = async (deviceKey: string, targetCustomerId: string) => {
     const targetCustomer = customersList.find(c => c.id === targetCustomerId);
     if (!targetCustomer) return;
 
-    const circuit = circuitsList.find(c => c.id === circuitKey || c.circuitId === circuitKey);
-    if (!circuit) return;
+    const device = devicesList.find(c => c.id === deviceKey || c.deviceId === deviceKey);
+    if (!device) return;
 
-    // 1. Update circuit node
-    await updateData(`circuits/${circuit.id}`, {
+    // 1. Update device node
+    await updateData(`devices/${device.id}`, {
       assignedCustomerId: targetCustomer.id,
       assignedCustomerName: targetCustomer.name,
       status: 'online'
     });
 
-    // 2. Update customer node circuits array
-    const existingCircuits = targetCustomer.circuits || [];
-    if (!existingCircuits.includes(circuit.id)) {
+    // 2. Update customer node devices array
+    const existingDevices = targetCustomer.devices || [];
+    if (!existingDevices.includes(device.id)) {
       await updateData(`customers/${targetCustomer.id}`, {
-        circuits: [...existingCircuits, circuit.id]
+        devices: [...existingDevices, device.id]
       });
     }
 
-    showToast(`Connected Circuit "${circuit.circuitId}" to ${targetCustomer.name}`, 'success');
+    showToast(`Connected Device "${device.deviceId || device.id}" to ${targetCustomer.name}`, 'success');
   };
 
-  // Handle Unlink Circuit from Customer
-  const handleUnlinkCircuit = async (circuit: Circuit) => {
-    if (!circuit.assignedCustomerId) return;
+  // Handle Unlink Device from Customer
+  const handleUnlinkDevice = async (device: Device) => {
+    if (!device.assignedCustomerId) return;
 
-    const previousCustId = circuit.assignedCustomerId;
+    const previousCustId = device.assignedCustomerId;
     const prevCust = customersList.find(c => c.id === previousCustId);
 
-    // 1. Update circuit node
-    await updateData(`circuits/${circuit.id}`, {
+    // 1. Update device node
+    await updateData(`devices/${device.id}`, {
       assignedCustomerId: null,
       assignedCustomerName: null,
       status: 'unassigned'
     });
 
-    // 2. Update customer node circuits array
-    if (prevCust && prevCust.circuits) {
-      const updatedCircuits = prevCust.circuits.filter(id => id !== circuit.id && id !== circuit.circuitId);
+    // 2. Update customer node devices array
+    if (prevCust && prevCust.devices) {
+      const updatedDevices = prevCust.devices.filter(id => id !== device.id && id !== device.deviceId);
       await updateData(`customers/${prevCust.id}`, {
-        circuits: updatedCircuits
+        devices: updatedDevices
       });
     }
 
-    showToast(`Unlinked Circuit "${circuit.circuitId}"`, 'info');
+    showToast(`Unlinked Device "${device.deviceId || device.id}"`, 'info');
   };
 
-  // Handle Registering & Connecting New Unique Circuit ID
-  const handleCreateAndAssignCircuit = async (e: React.FormEvent) => {
+  // Handle Registering & Connecting New Unique Device ID
+  const handleCreateAndAssignDevice = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newCircuitId.trim()) {
-      showToast('Please enter a valid Circuit ID', 'error');
+    if (!newDeviceId.trim()) {
+      showToast('Please enter a valid Device ID', 'error');
       return;
     }
 
-    const cleanCircuitId = newCircuitId.trim().toUpperCase();
-    const existing = circuitsList.find(c => c.circuitId.toLowerCase() === cleanCircuitId.toLowerCase() || c.id.toLowerCase() === cleanCircuitId.toLowerCase());
+    const cleanDeviceId = newDeviceId.trim().toUpperCase();
+    const existing = devicesList.find(c => (c.deviceId && c.deviceId.toLowerCase() === cleanDeviceId.toLowerCase()) || c.id.toLowerCase() === cleanDeviceId.toLowerCase());
     if (existing) {
-      showToast(`Circuit ID "${cleanCircuitId}" already exists in the system`, 'error');
+      showToast(`Device ID "${cleanDeviceId}" already exists in the system`, 'error');
       return;
     }
 
-    const targetCustomer = customersList.find(c => c.id === newCircuitCustomerTarget);
+    const targetCustomer = customersList.find(c => c.id === newDeviceCustomerTarget);
 
-    const circuitPayload: Circuit = {
-      id: cleanCircuitId,
-      circuitId: cleanCircuitId,
-      name: newCircuitName.trim() || `Circuit Node ${cleanCircuitId}`,
-      model: newCircuitModel,
+    const devicePayload: Device = {
+      id: cleanDeviceId,
+      deviceId: cleanDeviceId,
+      name: newDeviceName.trim() || `Device Node ${cleanDeviceId}`,
+      model: newDeviceModel,
       assignedCustomerId: targetCustomer ? targetCustomer.id : null,
       assignedCustomerName: targetCustomer ? targetCustomer.name : null,
       status: targetCustomer ? 'online' : 'unassigned',
-      location: newCircuitLocation || 'Unspecified Location',
+      location: newDeviceLocation || 'Unspecified Location',
       registeredAt: new Date().toISOString()
     };
 
-    // Save circuit to database
-    const res = await writeData(`circuits/${cleanCircuitId}`, circuitPayload);
+    // Save device to database
+    const res = await writeData(`devices/${cleanDeviceId}`, devicePayload);
 
     if (res.success) {
-      // If customer target selected, attach circuit to customer
+      // If customer target selected, attach device to customer
       if (targetCustomer) {
-        const existingCircuits = targetCustomer.circuits || [];
+        const existingDevices = targetCustomer.devices || [];
         await updateData(`customers/${targetCustomer.id}`, {
-          circuits: [...existingCircuits, cleanCircuitId]
+          devices: [...existingDevices, cleanDeviceId]
         });
-        showToast(`Created Circuit ${cleanCircuitId} and connected to ${targetCustomer.name}`, 'success');
+        showToast(`Created Device ${cleanDeviceId} and connected to ${targetCustomer.name}`, 'success');
       } else {
-        showToast(`Created unassigned Circuit ${cleanCircuitId}`, 'success');
+        showToast(`Created unassigned Device ${cleanDeviceId}`, 'success');
       }
 
       // Reset form
-      setNewCircuitId('');
-      setNewCircuitName('');
-      setNewCircuitCustomerTarget('');
-      setShowAddCircuitModal(false);
+      setNewDeviceId('');
+      setNewDeviceName('');
+      setNewDeviceCustomerTarget('');
+      setShowAddDeviceModal(false);
     } else {
-      showToast(`Failed to register circuit: ${res.error}`, 'error');
+      showToast(`Failed to register device: ${res.error}`, 'error');
     }
   };
 
@@ -388,7 +388,7 @@ export default function AdminPanel() {
                 <span>Administrator Login</span>
               </h1>
               <p className="text-xs text-slate-400 mt-1">
-                Enter your administrative credentials to manage customer accounts and hardware circuits.
+                Enter your administrative credentials to manage customer accounts and hardware devices.
               </p>
             </div>
           </div>
@@ -597,20 +597,20 @@ export default function AdminPanel() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
-              <span>Account Review & Circuit Management</span>
+              <span>Account Review & Device Management</span>
             </h1>
             <p className="text-xs sm:text-sm text-slate-400 mt-1">
-              Review incoming customer applications, approve or reject access, and map unique hardware Circuit IDs to accounts.
+              Review incoming customer applications, approve or reject access, and map unique hardware Device IDs to accounts.
             </p>
           </div>
 
           <div className="flex items-center gap-3">
             <button
-              onClick={() => setShowAddCircuitModal(true)}
+              onClick={() => setShowAddDeviceModal(true)}
               className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-semibold text-xs sm:text-sm hover:brightness-110 shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center space-x-2 cursor-pointer"
             >
               <PlusCircle className="w-4 h-4" />
-              <span>Enter New Circuit ID</span>
+              <span>Enter New Device ID</span>
             </button>
           </div>
         </div>
@@ -658,19 +658,19 @@ export default function AdminPanel() {
             <div className="text-[10px] sm:text-[11px] text-emerald-400/80 mt-1 truncate">Active accounts</div>
           </div>
 
-          {/* Metric 4: Total Circuits */}
+          {/* Metric 4: Total Devices */}
           <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/60 border border-white/5 backdrop-blur-sm relative overflow-hidden group hover:border-cyan-500/20 transition-all">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] sm:text-xs font-medium text-cyan-400 uppercase tracking-wider">Circuits</span>
+              <span className="text-[10px] sm:text-xs font-medium text-cyan-400 uppercase tracking-wider">Devices</span>
               <div className="p-1.5 sm:p-2 rounded-xl bg-cyan-500/10 text-cyan-400">
                 <Cpu className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
             </div>
-            <div className="text-xl sm:text-2xl font-bold text-white mt-2">{totalCircuits}</div>
+            <div className="text-xl sm:text-2xl font-bold text-white mt-2">{totalDevices}</div>
             <div className="text-[10px] sm:text-[11px] text-cyan-400/80 mt-1 truncate">Hardware units</div>
           </div>
 
-          {/* Metric 5: Unassigned Circuits */}
+          {/* Metric 5: Unassigned Devices */}
           <div className="col-span-2 sm:col-span-1 p-4 sm:p-5 rounded-2xl bg-slate-900/60 border border-white/5 backdrop-blur-sm relative overflow-hidden group hover:border-purple-500/20 transition-all">
             <div className="flex items-center justify-between">
               <span className="text-[10px] sm:text-xs font-medium text-purple-400 uppercase tracking-wider">Unassigned</span>
@@ -678,7 +678,7 @@ export default function AdminPanel() {
                 <Unlink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
             </div>
-            <div className="text-xl sm:text-2xl font-bold text-white mt-2">{unassignedCircuits}</div>
+            <div className="text-xl sm:text-2xl font-bold text-white mt-2">{unassignedDevices}</div>
             <div className="text-[10px] sm:text-[11px] text-purple-400/80 mt-1 truncate">Ready to link</div>
           </div>
 
@@ -705,15 +705,15 @@ export default function AdminPanel() {
             </button>
 
             <button
-              onClick={() => setActiveTab('circuits')}
+              onClick={() => setActiveTab('devices')}
               className={`w-full sm:w-auto px-4 sm:px-5 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center space-x-2 cursor-pointer ${
-                activeTab === 'circuits'
+                activeTab === 'devices'
                   ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 shadow-md'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
               <Cpu className="w-4 h-4" />
-              <span>Circuit ID Manager & Mapping</span>
+              <span>Device ID Manager & Mapping</span>
             </button>
           </div>
 
@@ -722,7 +722,7 @@ export default function AdminPanel() {
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
             <input
               type="text"
-              placeholder={activeTab === 'customers' ? "Search customer name, email..." : "Search Circuit ID..."}
+              placeholder={activeTab === 'customers' ? "Search customer name, email..." : "Search Device ID..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-8 py-2 bg-slate-900 border border-white/10 rounded-xl text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 transition-colors"
@@ -791,9 +791,9 @@ export default function AdminPanel() {
             ) : (
               <div className="grid grid-cols-1 gap-4">
                 {filteredCustomers.map((customer) => {
-                  // Find circuits linked to this customer
-                  const connectedCircuitsList = circuitsList.filter(
-                    c => c.assignedCustomerId === customer.id || (customer.circuits && customer.circuits.includes(c.id))
+                  // Find devices linked to this customer
+                  const connectedDevicesList = devicesList.filter(
+                    c => c.assignedCustomerId === customer.id || (customer.devices && customer.devices.includes(c.id))
                   );
 
                   return (
@@ -843,21 +843,21 @@ export default function AdminPanel() {
                           </div>
                         </div>
 
-                        {/* Connected Circuits Chips */}
+                        {/* Connected Devices Chips */}
                         <div className="flex items-center flex-wrap gap-2 pt-1">
                           <span className="text-[11px] font-medium text-slate-400 flex items-center gap-1">
-                            <Cpu className="w-3.5 h-3.5 text-cyan-400" /> Connected Circuits ({connectedCircuitsList.length}):
+                            <Cpu className="w-3.5 h-3.5 text-cyan-400" /> Connected Devices ({connectedDevicesList.length}):
                           </span>
-                          {connectedCircuitsList.length === 0 ? (
-                            <span className="text-[11px] text-slate-500 italic">No circuits assigned yet</span>
+                          {connectedDevicesList.length === 0 ? (
+                            <span className="text-[11px] text-slate-500 italic">No devices assigned yet</span>
                           ) : (
-                            connectedCircuitsList.map(crt => (
+                            connectedDevicesList.map(dev => (
                               <span
-                                key={crt.id}
+                                key={dev.id}
                                 className="px-2 py-0.5 rounded-md bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 font-mono text-[11px] flex items-center gap-1"
                               >
                                 <Radio className="w-3 h-3 text-cyan-400" />
-                                {crt.circuitId}
+                                {dev.deviceId || dev.id}
                               </span>
                             ))
                           )}
@@ -917,71 +917,71 @@ export default function AdminPanel() {
           </div>
         )}
 
-        {/* TAB 2: CIRCUIT ID MANAGER & MAPPING */}
-        {activeTab === 'circuits' && (
+        {/* TAB 2: DEVICE ID MANAGER & MAPPING */}
+        {activeTab === 'devices' && (
           <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900/40 p-4 rounded-2xl border border-white/5">
               <div>
                 <h2 className="text-base font-bold text-white flex items-center gap-2">
                   <Cpu className="w-5 h-5 text-cyan-400" />
-                  <span>Unique Circuit ID Registry</span>
+                  <span>Unique Device ID Registry</span>
                 </h2>
                 <p className="text-xs text-slate-400 mt-0.5">
-                  Each hardware circuit possesses a unique identifier string. Enter new IDs or manage customer assignments below.
+                  Each hardware device possesses a unique identifier string. Enter new IDs or manage customer assignments below.
                 </p>
               </div>
 
               <button
-                onClick={() => setShowAddCircuitModal(true)}
+                onClick={() => setShowAddDeviceModal(true)}
                 className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-xs hover:brightness-110 shadow-md transition-all flex items-center space-x-1.5 cursor-pointer"
               >
                 <PlusCircle className="w-4 h-4" />
-                <span>Add & Connect Circuit</span>
+                <span>Add & Connect Device</span>
               </button>
             </div>
 
-            {/* Circuits List Grid */}
-            {loadingCircuits ? (
+            {/* Devices List Grid */}
+            {loadingDevices ? (
               <div className="p-12 text-center text-slate-400 flex flex-col items-center justify-center space-y-3">
                 <RefreshCw className="w-8 h-8 animate-spin text-cyan-400" />
-                <p className="text-sm">Loading circuit registry...</p>
+                <p className="text-sm">Loading device registry...</p>
               </div>
-            ) : filteredCircuits.length === 0 ? (
+            ) : filteredDevices.length === 0 ? (
               <div className="p-12 rounded-2xl bg-slate-900/40 border border-white/5 text-center space-y-3">
                 <Cpu className="w-12 h-12 text-slate-600 mx-auto" />
-                <h3 className="text-base font-semibold text-slate-300">No circuits found</h3>
+                <h3 className="text-base font-semibold text-slate-300">No devices found</h3>
                 <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                  No circuit IDs match your current search query.
+                  No device IDs match your current search query.
                 </p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredCircuits.map((circuit) => {
-                  const assignedCust = customersList.find(c => c.id === circuit.assignedCustomerId);
+                {filteredDevices.map((device) => {
+                  const assignedCust = customersList.find(c => c.id === device.assignedCustomerId);
 
                   return (
                     <div
-                      key={circuit.id}
+                      key={device.id}
                       className="p-5 rounded-2xl bg-slate-900/60 border border-white/5 hover:border-cyan-500/30 backdrop-blur-sm transition-all space-y-4"
                     >
                       <div className="flex items-start justify-between">
                         <div className="space-y-1">
                           <div className="flex items-center space-x-2">
                             <span className="px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 font-mono text-xs font-bold">
-                              {circuit.circuitId}
+                              {device.deviceId || device.id}
                             </span>
                             <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wider ${
-                              circuit.status === 'online'
+                              device.status === 'online'
                                 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                : circuit.status === 'offline'
+                                : device.status === 'offline'
                                 ? 'bg-slate-800 text-slate-400 border border-white/5'
                                 : 'bg-purple-500/10 text-purple-300 border border-purple-500/20'
                             }`}>
-                              {circuit.status}
+                              {device.status}
                             </span>
                           </div>
-                          <h4 className="text-sm font-bold text-white pt-1">{circuit.name}</h4>
-                          <p className="text-xs text-slate-400">{circuit.model} • {circuit.location}</p>
+                          <h4 className="text-sm font-bold text-white pt-1">{device.name}</h4>
+                          <p className="text-xs text-slate-400">{device.model} • {device.location}</p>
                         </div>
 
                         <div className="p-2 rounded-xl bg-slate-800 text-cyan-400">
@@ -1007,7 +1007,7 @@ export default function AdminPanel() {
 
                         {assignedCust ? (
                           <button
-                            onClick={() => handleUnlinkCircuit(circuit)}
+                            onClick={() => handleUnlinkDevice(device)}
                             className="px-2.5 py-1 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-300 hover:bg-rose-500 hover:text-white transition-all text-[11px] font-semibold flex items-center gap-1 cursor-pointer"
                           >
                             <Unlink className="w-3 h-3" />
@@ -1018,7 +1018,7 @@ export default function AdminPanel() {
                             <select
                               onChange={(e) => {
                                 if (e.target.value) {
-                                  handleConnectCircuit(circuit.id, e.target.value);
+                                  handleConnectDevice(device.id, e.target.value);
                                 }
                               }}
                               defaultValue=""
@@ -1044,7 +1044,7 @@ export default function AdminPanel() {
 
       </main>
 
-      {/* MODAL 1: CUSTOMER DETAIL & CIRCUIT LINKING DRAWER */}
+      {/* MODAL 1: CUSTOMER DETAIL & DEVICE LINKING DRAWER */}
       {selectedCustomer && (
         <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-slate-900 border border-white/10 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-6 shadow-2xl relative animate-in fade-in zoom-in-95">
@@ -1134,40 +1134,40 @@ export default function AdminPanel() {
               </div>
             </div>
 
-            {/* Connected Circuits Management for this Customer */}
+            {/* Connected Devices Management for this Customer */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold text-white flex items-center gap-2">
                   <Link2 className="w-4 h-4 text-cyan-400" />
-                  <span>Connected Circuits</span>
+                  <span>Connected Devices</span>
                 </h3>
               </div>
 
-              {circuitsList.filter(c => c.assignedCustomerId === selectedCustomer.id).length === 0 ? (
+              {devicesList.filter(c => c.assignedCustomerId === selectedCustomer.id).length === 0 ? (
                 <div className="p-4 rounded-xl bg-slate-950/50 border border-white/5 text-center text-xs text-slate-500">
-                  No Circuit IDs currently connected to this account.
+                  No Device IDs currently connected to this account.
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {circuitsList.filter(c => c.assignedCustomerId === selectedCustomer.id).map(crt => (
+                  {devicesList.filter(c => c.assignedCustomerId === selectedCustomer.id).map(dev => (
                     <div
-                      key={crt.id}
+                      key={dev.id}
                       className="p-3 rounded-xl bg-slate-950/80 border border-white/5 flex items-center justify-between text-xs"
                     >
                       <div className="flex items-center space-x-3">
                         <span className="px-2 py-1 rounded bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 font-mono font-bold">
-                          {crt.circuitId}
+                          {dev.deviceId || dev.id}
                         </span>
                         <div>
-                          <div className="font-semibold text-white">{crt.name}</div>
-                          <div className="text-[11px] text-slate-500">{crt.location}</div>
+                          <div className="font-semibold text-white">{dev.name}</div>
+                          <div className="text-[11px] text-slate-500">{dev.location}</div>
                         </div>
                       </div>
 
                       <button
-                        onClick={() => handleUnlinkCircuit(crt)}
+                        onClick={() => handleUnlinkDevice(dev)}
                         className="p-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white transition-all cursor-pointer"
-                        title="Unlink circuit"
+                        title="Unlink device"
                       >
                         <Unlink className="w-3.5 h-3.5" />
                       </button>
@@ -1176,26 +1176,26 @@ export default function AdminPanel() {
                 </div>
               )}
 
-              {/* Quick Link Unassigned Circuit Dropdown */}
+              {/* Quick Link Unassigned Device Dropdown */}
               <div className="pt-2">
                 <label className="text-xs font-semibold text-slate-400 block mb-1.5">
-                  Link Available Circuit to {selectedCustomer.name}:
+                  Link Available Device to {selectedCustomer.name}:
                 </label>
                 <div className="flex gap-2">
                   <select
                     onChange={(e) => {
                       if (e.target.value) {
-                        handleConnectCircuit(e.target.value, selectedCustomer.id);
+                        handleConnectDevice(e.target.value, selectedCustomer.id);
                         e.target.value = '';
                       }
                     }}
                     defaultValue=""
                     className="flex-1 bg-slate-950 border border-white/10 rounded-xl text-xs text-slate-200 px-3 py-2.5 focus:outline-none focus:border-emerald-500"
                   >
-                    <option value="" disabled>Select unassigned Circuit ID...</option>
-                    {circuitsList.filter(c => !c.assignedCustomerId || c.status === 'unassigned').map(c => (
+                    <option value="" disabled>Select unassigned Device ID...</option>
+                    {devicesList.filter(c => !c.assignedCustomerId || c.status === 'unassigned').map(c => (
                       <option key={c.id} value={c.id}>
-                        {c.circuitId} — {c.name} ({c.location})
+                        {c.deviceId || c.id} — {c.name} ({c.location})
                       </option>
                     ))}
                   </select>
@@ -1243,12 +1243,12 @@ export default function AdminPanel() {
         </div>
       )}
 
-      {/* MODAL 3: ENTER NEW CIRCUIT ID FORM */}
-      {showAddCircuitModal && (
+      {/* MODAL 3: ENTER NEW DEVICE ID FORM */}
+      {showAddDeviceModal && (
         <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
           <div className="bg-slate-900 border border-white/10 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6 space-y-5 shadow-2xl relative animate-in fade-in zoom-in-95">
             <button
-              onClick={() => setShowAddCircuitModal(false)}
+              onClick={() => setShowAddDeviceModal(false)}
               className="absolute top-4 right-4 p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white"
             >
               <X className="w-5 h-5" />
@@ -1257,37 +1257,37 @@ export default function AdminPanel() {
             <div className="space-y-1">
               <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
                 <PlusCircle className="w-5 h-5 text-emerald-400 shrink-0" />
-                <span>Register & Connect Unique Circuit ID</span>
+                <span>Register & Connect Unique Device ID</span>
               </h3>
               <p className="text-xs text-slate-400">
-                Input the hardware unique Circuit ID and optionally connect it to a customer account.
+                Input the hardware unique Device ID and optionally connect it to a customer account.
               </p>
             </div>
 
-            <form onSubmit={handleCreateAndAssignCircuit} className="space-y-4">
+            <form onSubmit={handleCreateAndAssignDevice} className="space-y-4">
               <div>
                 <label className="text-xs font-semibold text-slate-300 block mb-1">
-                  Unique Circuit ID <span className="text-emerald-400">*</span>
+                  Unique Device ID <span className="text-emerald-400">*</span>
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. CRCT-8899-X or lionbit/device02"
-                  value={newCircuitId}
-                  onChange={(e) => setNewCircuitId(e.target.value)}
+                  placeholder="e.g. DEV-8899-X or lionbit/device02"
+                  value={newDeviceId}
+                  onChange={(e) => setNewDeviceId(e.target.value)}
                   className="w-full p-2.5 bg-slate-950 border border-white/10 rounded-xl text-xs font-mono text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
               <div>
                 <label className="text-xs font-semibold text-slate-300 block mb-1">
-                  Circuit Name / Label
+                  Device Name / Label
                 </label>
                 <input
                   type="text"
                   placeholder="e.g. Reservoir Sensor Array Bay 4"
-                  value={newCircuitName}
-                  onChange={(e) => setNewCircuitName(e.target.value)}
+                  value={newDeviceName}
+                  onChange={(e) => setNewDeviceName(e.target.value)}
                   className="w-full p-2.5 bg-slate-950 border border-white/10 rounded-xl text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500"
                 />
               </div>
@@ -1297,8 +1297,8 @@ export default function AdminPanel() {
                   <label className="text-xs font-semibold text-slate-300 block mb-1">Hardware Model</label>
                   <input
                     type="text"
-                    value={newCircuitModel}
-                    onChange={(e) => setNewCircuitModel(e.target.value)}
+                    value={newDeviceModel}
+                    onChange={(e) => setNewDeviceModel(e.target.value)}
                     className="w-full p-2.5 bg-slate-950 border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
                   />
                 </div>
@@ -1306,8 +1306,8 @@ export default function AdminPanel() {
                   <label className="text-xs font-semibold text-slate-300 block mb-1">Location / Zone</label>
                   <input
                     type="text"
-                    value={newCircuitLocation}
-                    onChange={(e) => setNewCircuitLocation(e.target.value)}
+                    value={newDeviceLocation}
+                    onChange={(e) => setNewDeviceLocation(e.target.value)}
                     className="w-full p-2.5 bg-slate-950 border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
                   />
                 </div>
@@ -1318,8 +1318,8 @@ export default function AdminPanel() {
                   Connect Immediately To Customer (Optional)
                 </label>
                 <select
-                  value={newCircuitCustomerTarget}
-                  onChange={(e) => setNewCircuitCustomerTarget(e.target.value)}
+                  value={newDeviceCustomerTarget}
+                  onChange={(e) => setNewDeviceCustomerTarget(e.target.value)}
                   className="w-full p-2.5 bg-slate-950 border border-white/10 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-emerald-500"
                 >
                   <option value="">Leave Unassigned (Inventory)</option>
@@ -1334,7 +1334,7 @@ export default function AdminPanel() {
               <div className="flex items-center justify-end space-x-3 pt-3">
                 <button
                   type="button"
-                  onClick={() => setShowAddCircuitModal(false)}
+                  onClick={() => setShowAddDeviceModal(false)}
                   className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-semibold text-xs hover:bg-slate-700"
                 >
                   Cancel
@@ -1343,7 +1343,7 @@ export default function AdminPanel() {
                   type="submit"
                   className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs hover:brightness-110 shadow-lg cursor-pointer"
                 >
-                  Register & Bind Circuit
+                  Register & Bind Device
                 </button>
               </div>
             </form>

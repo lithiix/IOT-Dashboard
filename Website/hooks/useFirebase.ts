@@ -41,7 +41,7 @@ const mockDatabaseState: any = {
       registeredAt: "2026-07-10T09:30:00.000Z",
       facilityType: "Commercial Hydroponic Farm",
       location: "San Jose, CA",
-      circuits: ["lionbit/device01", "CRCT-9012-B"],
+      devices: ["lionbit/device01", "DEV-9012-B"],
       notes: "High priority commercial client. Operating 12 greenhouse bays."
     },
     "cust_002": {
@@ -54,8 +54,8 @@ const mockDatabaseState: any = {
       registeredAt: "2026-07-20T14:15:00.000Z",
       facilityType: "Research Greenhouse",
       location: "Austin, TX",
-      circuits: [],
-      notes: "Requested activation for 3 new sensor circuits."
+      devices: [],
+      notes: "Requested activation for 3 new sensor devices."
     },
     "cust_003": {
       id: "cust_003",
@@ -67,8 +67,8 @@ const mockDatabaseState: any = {
       registeredAt: "2026-07-21T08:45:00.000Z",
       facilityType: "Vertical Indoor Farm",
       location: "Denver, CO",
-      circuits: [],
-      notes: "Pending business verification and circuit assignment."
+      devices: [],
+      notes: "Pending business verification and device assignment."
     },
     "cust_004": {
       id: "cust_004",
@@ -80,7 +80,7 @@ const mockDatabaseState: any = {
       registeredAt: "2026-07-15T11:20:00.000Z",
       facilityType: "Research Facility",
       location: "Seattle, WA",
-      circuits: ["CRCT-3341-S"],
+      devices: ["DEV-3341-S"],
       notes: "Approved under Enterprise tier."
     },
     "cust_005": {
@@ -93,14 +93,14 @@ const mockDatabaseState: any = {
       registeredAt: "2026-07-18T16:00:00.000Z",
       facilityType: "Small Holding",
       location: "Portland, OR",
-      circuits: [],
+      devices: [],
       notes: "Incomplete documentation and invalid tax registration ID."
     }
   },
-  circuits: {
+  devices: {
     "lionbit/device01": {
       id: "lionbit/device01",
-      circuitId: "CRCT-1001-ALPHA",
+      deviceId: "DEV-1001-ALPHA",
       name: "Main Hydroponics Controller Node 01",
       model: "Gravity Sensor Unit v3",
       assignedCustomerId: "cust_001",
@@ -109,9 +109,9 @@ const mockDatabaseState: any = {
       location: "Greenhouse Bay 1",
       registeredAt: "2026-07-10T10:00:00.000Z"
     },
-    "CRCT-9012-B": {
-      id: "CRCT-9012-B",
-      circuitId: "CRCT-9012-B",
+    "DEV-9012-B": {
+      id: "DEV-9012-B",
+      deviceId: "DEV-9012-B",
       name: "Reservoir Telemetry Board B2",
       model: "Gravity EC/pH Pro Node",
       assignedCustomerId: "cust_001",
@@ -120,9 +120,9 @@ const mockDatabaseState: any = {
       location: "Nutrient Tank 2",
       registeredAt: "2026-07-12T13:45:00.000Z"
     },
-    "CRCT-3341-S": {
-      id: "CRCT-3341-S",
-      circuitId: "CRCT-3341-S",
+    "DEV-3341-S": {
+      id: "DEV-3341-S",
+      deviceId: "DEV-3341-S",
       name: "Climate Monitor Unit S1",
       model: "Gravity Temp/Humidity Array",
       assignedCustomerId: "cust_004",
@@ -131,9 +131,9 @@ const mockDatabaseState: any = {
       location: "Lab Room 4",
       registeredAt: "2026-07-15T12:00:00.000Z"
     },
-    "CRCT-7788-U": {
-      id: "CRCT-7788-U",
-      circuitId: "CRCT-7788-U",
+    "DEV-7788-U": {
+      id: "DEV-7788-U",
+      deviceId: "DEV-7788-U",
       name: "Unassigned Smart Sensor Board U1",
       model: "Gravity Universal IoT Node",
       assignedCustomerId: null,
@@ -142,9 +142,9 @@ const mockDatabaseState: any = {
       location: "Warehouse Inventory",
       registeredAt: "2026-07-19T10:00:00.000Z"
     },
-    "CRCT-5544-X": {
-      id: "CRCT-5544-X",
-      circuitId: "CRCT-5544-X",
+    "DEV-5544-X": {
+      id: "DEV-5544-X",
+      deviceId: "DEV-5544-X",
       name: "Unassigned Dissolved Oxygen Sensor X4",
       model: "Gravity DO Precision Node",
       assignedCustomerId: null,
