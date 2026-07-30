@@ -1,31 +1,48 @@
 'use client';
 
-import { createContext, useContext, ReactNode } from 'react';
-import { database, isFirebaseConfigured } from '@/lib/firebase';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { apiClient } from '@/lib/apiClient';
 
-interface FirebaseContextType {
-  database: any;
+interface ApiContextType {
+  isConnected: boolean;
   isDemo: boolean;
+  apiStatus: any;
+  refreshStatus: () => Promise<void>;
 }
 
-const FirebaseContext = createContext<FirebaseContextType | undefined>(undefined);
+const ApiContext = createContext<ApiContextType | undefined>(undefined);
 
-interface FirebaseProviderProps {
-  children: ReactNode;
-}
+export function FirebaseProvider({ children }: { children: React.ReactNode }) {
+  const [isConnected, setIsConnected] = useState<boolean>(true);
+  const [apiStatus, setApiStatus] = useState<any>(null);
 
-export function FirebaseProvider({ children }: FirebaseProviderProps) {
+  const refreshStatus = async () => {
+    try {
+      const res = await apiClient.getStatus();
+      setApiStatus(res);
+      setIsConnected(true);
+    } catch {
+      setIsConnected(false);
+    }
+  };
+
+  useEffect(() => {
+    refreshStatus();
+    const interval = setInterval(refreshStatus, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <FirebaseContext.Provider value={{ database, isDemo: !isFirebaseConfigured }}>
+    <ApiContext.Provider value={{ isConnected, isDemo: false, apiStatus, refreshStatus }}>
       {children}
-    </FirebaseContext.Provider>
+    </ApiContext.Provider>
   );
 }
 
 export function useFirebase() {
-  const context = useContext(FirebaseContext);
-  if (context === undefined) {
-    throw new Error('useFirebase must be used within a FirebaseProvider');
+  const context = useContext(ApiContext);
+  if (!context) {
+    return { isConnected: true, isDemo: false, apiStatus: null, refreshStatus: async () => {} };
   }
   return context;
 }

@@ -1,45 +1,7 @@
-// Firebase configuration
-import { initializeApp } from 'firebase/app';
-import { getDatabase } from 'firebase/database';
-import { getAnalytics, isSupported } from 'firebase/analytics';
+/**
+ * Legacy Firebase configuration file.
+ * Firebase has been replaced with GravityCore PHP REST API (api/ & lib/apiClient.ts).
+ */
 
-export const isFirebaseConfigured = !!(
-  process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID &&
-  process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
-  process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL
-);
-
-let app: any = null;
-let database: any = null;
-let analytics: any = null;
-
-if (isFirebaseConfigured) {
-  const firebaseConfig = {
-    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-    databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-    measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
-  };
-
-  // Initialize Firebase
-  app = initializeApp(firebaseConfig);
-
-  // Initialize Realtime Database
-  database = getDatabase(app);
-
-  // Initialize Analytics (only in browser)
-  if (typeof window !== 'undefined') {
-    isSupported().then((supported) => {
-      if (supported) {
-        analytics = getAnalytics(app);
-      }
-    });
-  }
-}
-
-export { database, analytics };
-export default app;
+export const isFirebaseConfigured = false;
+export const database = null;

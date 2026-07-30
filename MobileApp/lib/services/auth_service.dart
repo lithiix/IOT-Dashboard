@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,6 +34,25 @@ class AuthService extends ChangeNotifier {
     _loadSession();
   }
 
+  // Validation Helpers
+  static bool isValidEmail(String email) {
+    final cleanEmail = email.trim();
+    // Disallow illegal characters like { } [ ] " ' \ < >
+    if (RegExp(r'[\{\}\[\]"\\<>\s]').hasMatch(cleanEmail)) {
+      return false;
+    }
+    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    return emailRegex.hasMatch(cleanEmail);
+  }
+
+  static bool hasMinLength(String password) => password.length >= 6;
+  static bool hasUppercase(String password) => RegExp(r'[A-Z]').hasMatch(password);
+  static bool hasSpecialChar(String password) => RegExp(r'[!@#$%^&*(),.?":{}|_+\-=\[\]\\/<>]').hasMatch(password);
+
+  static bool isValidPassword(String password) {
+    return hasMinLength(password) && hasUppercase(password) && hasSpecialChar(password);
+  }
+
   Future<void> _loadSession() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -41,6 +61,20 @@ class AuthService extends ChangeNotifier {
       final userPhone = prefs.getString('user_phone') ?? '';
       final deliveryAddress = prefs.getString('delivery_address') ?? '';
       final billingAddress = prefs.getString('billing_address') ?? '';
+
+      // Ensure seed default user is pre-registered
+      final registeredJson = prefs.getString('registered_users_db');
+      if (registeredJson == null) {
+        final initialUsers = {
+          'customer@gravity.io': {
+            'email': 'customer@gravity.io',
+            'name': 'Green Horizon Farm',
+            'password': 'Customer@123',
+            'phone': '+94 77 123 4567',
+          }
+        };
+        await prefs.setString('registered_users_db', json.encode(initialUsers));
+      }
 
       if (userEmail != null && userEmail.isNotEmpty) {
         _currentUser = UserModel(
@@ -67,38 +101,60 @@ class AuthService extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    await Future.delayed(const Duration(milliseconds: 900)); // Simulate network request
+    await Future.delayed(const Duration(milliseconds: 600));
 
-    final cleanEmail = email.trim();
-    final emailParts = cleanEmail.split('@');
+    final cleanEmail = email.trim().toLowerCase();
 
-    if (cleanEmail.isEmpty || emailParts.length != 2 || emailParts[0].isEmpty || emailParts[1].isEmpty) {
-      _errorMessage = 'Please enter a valid email address';
+    if (!isValidEmail(cleanEmail)) {
+      _errorMessage = 'Invalid email address. Please check email syntax and remove illegal characters.';
       _isLoading = false;
       notifyListeners();
       return false;
     }
 
-    if (password.length < 6) {
-      _errorMessage = 'Password must be at least 6 characters';
+    if (password.isEmpty) {
+      _errorMessage = 'Please enter your password.';
       _isLoading = false;
       notifyListeners();
       return false;
     }
 
     final prefs = await SharedPreferences.getInstance();
-    final savedPhone = prefs.getString('user_phone') ?? '';
+    final registeredJson = prefs.getString('registered_users_db');
+    Map<String, dynamic> registeredUsers = {};
+
+    if (registeredJson != null) {
+      try {
+        registeredUsers = json.decode(registeredJson);
+      } catch (_) {}
+    }
+
+    // Enforce Registration Requirement
+    if (!registeredUsers.containsKey(cleanEmail)) {
+      _errorMessage = 'Account not registered. New customers must create an account first.';
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+
+    final userData = registeredUsers[cleanEmail];
+    final savedPassword = userData['password'] ?? '';
+
+    if (savedPassword.isNotEmpty && savedPassword != password) {
+      _errorMessage = 'Incorrect password. Please verify your credentials.';
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+
+    final savedName = userData['name'] ?? 'Customer';
+    final savedPhone = userData['phone'] ?? (prefs.getString('user_phone') ?? '');
     final savedDelivery = prefs.getString('delivery_address') ?? '';
     final savedBilling = prefs.getString('billing_address') ?? '';
 
-    final rawName = emailParts[0];
-    final formattedName = rawName.isNotEmpty
-        ? rawName[0].toUpperCase() + rawName.substring(1)
-        : 'Customer';
-
     _currentUser = UserModel(
       email: cleanEmail,
-      name: formattedName,
+      name: savedName,
       phoneNumber: savedPhone,
       deliveryAddress: savedDelivery,
       billingAddress: savedBilling,
@@ -118,31 +174,57 @@ class AuthService extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    await Future.delayed(const Duration(milliseconds: 900));
+    await Future.delayed(const Duration(milliseconds: 600));
 
-    final cleanEmail = email.trim();
-    final emailParts = cleanEmail.split('@');
+    final cleanEmail = email.trim().toLowerCase();
 
-    if (cleanEmail.isEmpty || emailParts.length != 2 || emailParts[0].isEmpty || emailParts[1].isEmpty) {
-      _errorMessage = 'Please enter a valid email address';
-      _isLoading = false;
-      notifyListeners();
-      return false;
-    }
-
-    if (password.length < 6) {
-      _errorMessage = 'Password must be at least 6 characters';
+    if (!isValidEmail(cleanEmail)) {
+      _errorMessage = 'Invalid email format. Email cannot contain spaces or special brackets { } [ ] " \' \\';
       _isLoading = false;
       notifyListeners();
       return false;
     }
 
     if (name.trim().isEmpty) {
-      _errorMessage = 'Please enter your name';
+      _errorMessage = 'Please enter your full name.';
       _isLoading = false;
       notifyListeners();
       return false;
     }
+
+    if (!isValidPassword(password)) {
+      _errorMessage = 'Password must be at least 6 characters and contain at least 1 Capital Letter (A-Z) and 1 Special Character (!@#\$...).';
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    final registeredJson = prefs.getString('registered_users_db');
+    Map<String, dynamic> registeredUsers = {};
+
+    if (registeredJson != null) {
+      try {
+        registeredUsers = json.decode(registeredJson);
+      } catch (_) {}
+    }
+
+    if (registeredUsers.containsKey(cleanEmail)) {
+      _errorMessage = 'An account with this email already exists. Please log in.';
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+
+    // Save new registered account
+    registeredUsers[cleanEmail] = {
+      'email': cleanEmail,
+      'name': name.trim(),
+      'password': password,
+      'registeredAt': DateTime.now().toIso8601String(),
+    };
+
+    await prefs.setString('registered_users_db', json.encode(registeredUsers));
 
     _currentUser = UserModel(
       email: cleanEmail,
@@ -153,7 +235,6 @@ class AuthService extends ChangeNotifier {
       createdAt: DateTime.now(),
     );
 
-    final prefs = await SharedPreferences.getInstance();
     await prefs.setString('user_email', _currentUser!.email);
     await prefs.setString('user_name', _currentUser!.name);
 

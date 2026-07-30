@@ -158,10 +158,11 @@ class _IotDashboardScreenState extends State<IotDashboardScreen> {
           ),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await Future.delayed(const Duration(milliseconds: 600));
-        },
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await Future.delayed(const Duration(milliseconds: 600));
+          },
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -462,8 +463,9 @@ class _IotDashboardScreenState extends State<IotDashboardScreen> {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildStatusBadge(DeviceConnectionStatus status) {
     Color bg;

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRealtimeData, useFirebaseMutation } from '@/hooks/useFirebase';
+import { apiClient } from '@/lib/apiClient';
 import {
   Users,
   CheckCircle2,
@@ -91,10 +92,18 @@ export default function AdminPanel() {
   const { updateData, writeData } = useFirebaseMutation();
 
   // Navigation & UI States
-  const [activeTab, setActiveTab] = useState<'customers' | 'devices'>('customers');
+  const [activeTab, setActiveTab] = useState<'customers' | 'devices' | 'settings'>('customers');
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+
+  // Super Admin Credentials Settings Form State
+  const [profileUsername, setProfileUsername] = useState<string>('superadmin');
+  const [profileEmail, setProfileEmail] = useState<string>('');
+  const [currentPasswordInput, setCurrentPasswordInput] = useState<string>('');
+  const [newPasswordInput, setNewPasswordInput] = useState<string>('');
+  const [confirmPasswordInput, setConfirmPasswordInput] = useState<string>('');
+  const [profileSubmitting, setProfileSubmitting] = useState<boolean>(false);
   
   // Selected Customer Modal State
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
@@ -119,30 +128,73 @@ export default function AdminPanel() {
     setTimeout(() => setToastMessage(null), 4000);
   };
 
-  // Handle Admin Login Form Submission
-  const handleAdminLogin = (e: React.FormEvent) => {
+  // Handle Admin Login Form Submission via PHP REST API
+  const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
     setLoginSubmitting(true);
 
-    setTimeout(() => {
-      const targetEmail = (process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'admin@gravity.io').trim().toLowerCase();
-      const targetPassword = (process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123').trim();
-
-      const inputEmail = adminEmail.trim().toLowerCase();
+    try {
+      const inputEmail = adminEmail.trim();
       const inputPassword = adminPassword.trim();
 
-      if (inputEmail === targetEmail && inputPassword === targetPassword) {
+      const response = await apiClient.login(inputEmail, inputPassword);
+
+      if (response && response.status === 'success') {
+        const userEmail = response.user?.email || inputEmail;
         localStorage.setItem('gravity_admin_auth', 'true');
-        localStorage.setItem('gravity_admin_email', inputEmail);
+        localStorage.setItem('gravity_admin_email', userEmail);
         setIsAuthenticated(true);
-        setAuthenticatedUserEmail(inputEmail);
-        showToast('Successfully authenticated as Enterprise Administrator', 'success');
+        setAuthenticatedUserEmail(userEmail);
+        setProfileEmail(userEmail);
+        if (response.user?.username) {
+          setProfileUsername(response.user.username);
+        }
+        showToast('Successfully authenticated as Enterprise Super Administrator', 'success');
       } else {
-        setAuthError('Invalid administrator email or password. Please verify your credentials.');
+        setAuthError(response.message || 'Invalid administrator email or password.');
       }
+    } catch (err: any) {
+      setAuthError(err.message || 'Invalid administrator email or password. Please verify your credentials.');
+    } finally {
       setLoginSubmitting(false);
-    }, 600);
+    }
+  };
+
+  // Handle Super Admin Profile & Password Update in MySQL Database
+  const handleProfileUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPasswordInput && newPasswordInput !== confirmPasswordInput) {
+      showToast('New password and confirmation password do not match!', 'error');
+      return;
+    }
+
+    setProfileSubmitting(true);
+    try {
+      const payload: any = {};
+      if (profileEmail) payload.new_email = profileEmail;
+      if (profileUsername) payload.username = profileUsername;
+      if (currentPasswordInput) payload.current_password = currentPasswordInput;
+      if (newPasswordInput) payload.new_password = newPasswordInput;
+
+      const response = await apiClient.updateAdminProfile(payload);
+      if (response.status === 'success') {
+        showToast(response.message || 'Credentials updated in database!', 'success');
+        if (response.updated_email) {
+          setAuthenticatedUserEmail(response.updated_email);
+          localStorage.setItem('gravity_admin_email', response.updated_email);
+        }
+        setCurrentPasswordInput('');
+        setNewPasswordInput('');
+        setConfirmPasswordInput('');
+      } else {
+        showToast(response.message || 'Failed to update credentials', 'error');
+      }
+    } catch (err: any) {
+      showToast(err.message || 'Error updating credentials in database', 'error');
+    } finally {
+      setProfileSubmitting(false);
+    }
   };
 
   // Handle Admin Logout
@@ -468,20 +520,6 @@ export default function AdminPanel() {
               </button>
             </form>
 
-            {/* Demo Credentials Helper Box */}
-            <div className="p-3.5 rounded-xl bg-emerald-500/5 border border-emerald-500/20 text-xs text-emerald-400 space-y-1">
-              <div className="font-semibold text-emerald-300 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Demo Admin Credentials:</span>
-              </div>
-              <div className="font-mono text-[11px] text-slate-300">
-                Email: <span className="text-white font-bold">admin@gravity.io</span>
-              </div>
-              <div className="font-mono text-[11px] text-slate-300">
-                Password: <span className="text-white font-bold">admin123</span>
-              </div>
-            </div>
-
           </div>
 
           <div className="text-center">
@@ -528,14 +566,6 @@ export default function AdminPanel() {
               <UserCheck className="w-3.5 h-3.5 text-emerald-400" />
               <span>{authenticatedUserEmail}</span>
             </div>
-
-            <Link
-              href="/dashboard"
-              className="px-3.5 py-2 rounded-xl bg-slate-900 border border-white/10 text-xs font-semibold text-slate-300 hover:text-white hover:border-emerald-500/40 transition-all flex items-center space-x-1.5"
-            >
-              <Zap className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Sensor Dashboard</span>
-            </Link>
 
             <button
               onClick={handleAdminLogout}
@@ -714,6 +744,18 @@ export default function AdminPanel() {
             >
               <Cpu className="w-4 h-4" />
               <span>Device ID Manager & Mapping</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('settings')}
+              className={`w-full sm:w-auto px-4 sm:px-5 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center space-x-2 cursor-pointer ${
+                activeTab === 'settings'
+                  ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 shadow-md'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Lock className="w-4 h-4" />
+              <span>Super Admin Security</span>
             </button>
           </div>
 
@@ -1039,6 +1081,110 @@ export default function AdminPanel() {
                 })}
               </div>
             )}
+          </div>
+        )}
+
+        {/* TAB 3: SUPER ADMIN SECURITY & CREDENTIAL MANAGEMENT */}
+        {activeTab === 'settings' && (
+          <div className="max-w-2xl mx-auto space-y-6">
+            <div className="p-6 sm:p-8 rounded-2xl bg-slate-900/90 border border-white/10 shadow-2xl space-y-6 relative overflow-hidden">
+              <div className="flex items-center space-x-3.5 pb-5 border-b border-white/10">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500/20 to-teal-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 shadow-lg shadow-emerald-500/10">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <div>
+                  <h2 className="text-lg sm:text-xl font-extrabold text-white">Super Admin Database Credentials</h2>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Update administrator email, username, and password directly in the MySQL database (<span className="font-mono text-emerald-400 font-semibold">gravitycore</span>).
+                  </p>
+                </div>
+              </div>
+
+              <form onSubmit={handleProfileUpdate} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Super Admin Username</label>
+                  <input
+                    type="text"
+                    value={profileUsername}
+                    onChange={(e) => setProfileUsername(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-slate-950 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                    placeholder="superadmin"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Super Admin Email Address</label>
+                  <input
+                    type="email"
+                    value={profileEmail}
+                    onChange={(e) => setProfileEmail(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-slate-950 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                    placeholder="admin@gravitycore.io"
+                    required
+                  />
+                </div>
+
+                <div className="py-2">
+                  <div className="h-px bg-white/10 w-full" />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                    Current Password <span className="text-rose-400 font-normal">*Required to confirm password changes</span>
+                  </label>
+                  <input
+                    type="password"
+                    value={currentPasswordInput}
+                    onChange={(e) => setCurrentPasswordInput(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-slate-950 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                    placeholder="Enter current password to authorize database update"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-300 mb-1.5">New Password</label>
+                    <input
+                      type="password"
+                      value={newPasswordInput}
+                      onChange={(e) => setNewPasswordInput(e.target.value)}
+                      className="w-full px-4 py-2.5 bg-slate-950 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                      placeholder="Leave blank to keep current"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-300 mb-1.5">Confirm New Password</label>
+                    <input
+                      type="password"
+                      value={confirmPasswordInput}
+                      onChange={(e) => setConfirmPasswordInput(e.target.value)}
+                      className="w-full px-4 py-2.5 bg-slate-950 border border-white/10 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                      placeholder="Re-enter new password"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={profileSubmitting}
+                  className="w-full mt-4 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs sm:text-sm hover:brightness-110 shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
+                >
+                  {profileSubmitting ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <span>Saving Credentials to MySQL Database...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="w-4 h-4" />
+                      <span>Save Super Admin Credentials to Database</span>
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
           </div>
         )}
 

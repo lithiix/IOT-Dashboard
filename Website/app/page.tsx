@@ -89,13 +89,6 @@ export default function Home() {
               <ShieldCheck className="w-4 h-4 mr-2" />
               Admin Panel
             </Link>
-            <Link 
-              href="/dashboard"
-              className="relative px-5 py-2.5 rounded-xl bg-slate-900 border border-white/5 text-sm font-semibold hover:border-emerald-500/50 hover:text-emerald-400 transition-all duration-200 shadow-md flex items-center group cursor-pointer"
-            >
-              <RefreshCw className="w-3.5 h-3.5 mr-2 animate-spin text-emerald-400 group-hover:text-emerald-300" />
-              Live IoT Demo
-            </Link>
           </div>
 
           {/* Mobile Navigation Toggle Button */}
@@ -152,14 +145,6 @@ export default function Home() {
               >
                 <ShieldCheck className="w-4 h-4 mr-2" />
                 Admin Panel
-              </Link>
-              <Link
-                href="/dashboard"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-white/10 text-sm font-semibold text-slate-200 hover:text-emerald-400 transition-all flex items-center justify-center"
-              >
-                <RefreshCw className="w-4 h-4 mr-2 animate-spin text-emerald-400" />
-                Live IoT Demo
               </Link>
             </div>
           </div>

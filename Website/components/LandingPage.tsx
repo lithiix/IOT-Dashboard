@@ -116,19 +116,12 @@ export default function LandingPage() {
           </nav>
 
           <div className="hidden sm:flex items-center space-x-4">
-            <Link 
+            <Link
               href="/admin"
               className="px-4 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-sm font-semibold text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 transition-all duration-200 shadow-md flex items-center group cursor-pointer"
             >
               <ShieldCheck className="w-4 h-4 mr-2" />
               Admin Panel
-            </Link>
-            <Link 
-              href="/dashboard"
-              className="relative px-5 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-sm font-semibold hover:border-emerald-500/50 hover:text-emerald-400 transition-all duration-200 shadow-md flex items-center group cursor-pointer"
-            >
-              <RefreshCw className="w-3.5 h-3.5 mr-2 animate-spin text-emerald-400 group-hover:text-emerald-300" />
-              Live IoT Demo
             </Link>
           </div>
 
@@ -186,14 +179,6 @@ export default function LandingPage() {
               >
                 <ShieldCheck className="w-4 h-4 mr-2" />
                 Admin Panel
-              </Link>
-              <Link
-                href="/dashboard"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-white/10 text-sm font-semibold text-slate-200 hover:text-emerald-400 transition-all flex items-center justify-center"
-              >
-                <RefreshCw className="w-4 h-4 mr-2 animate-spin text-emerald-400" />
-                Live IoT Demo
               </Link>
             </div>
           </div>
