@@ -69,7 +69,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: Row(
         children: [
           Icon(
-            isMet ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded,
+            isMet
+                ? Icons.check_circle_rounded
+                : Icons.radio_button_unchecked_rounded,
             size: 14,
             color: isMet ? AppColors.primary : AppColors.textSecondary,
           ),
@@ -92,9 +94,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final authService = Provider.of<AuthService>(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? Colors.white : AppColors.lightTextPrimary;
-    final secondaryTextColor = isDark ? AppColors.textSecondary : AppColors.lightTextSecondary;
-    final cardBg = isDark ? AppColors.surface.withValues(alpha: 0.85) : AppColors.lightSurface;
-    final cardBorder = isDark ? AppColors.surfaceBorder : AppColors.lightSurfaceBorder;
+    final secondaryTextColor = isDark
+        ? AppColors.textSecondary
+        : AppColors.lightTextSecondary;
+    final cardBg = isDark
+        ? AppColors.surface.withValues(alpha: 0.85)
+        : AppColors.lightSurface;
+    final cardBorder = isDark
+        ? AppColors.surfaceBorder
+        : AppColors.lightSurfaceBorder;
 
     final pass = _passwordController.text;
     final hasLength = AuthService.hasMinLength(pass);
@@ -104,10 +112,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: textColor,
-          ),
+          icon: Icon(Icons.arrow_back_ios_new_rounded, color: textColor),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -122,10 +127,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 height: 250,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.secondary.withValues(alpha: isDark ? 0.15 : 0.08),
+                  color: AppColors.secondary.withValues(
+                    alpha: isDark ? 0.15 : 0.08,
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.secondary.withValues(alpha: isDark ? 0.15 : 0.08),
+                      color: AppColors.secondary.withValues(
+                        alpha: isDark ? 0.15 : 0.08,
+                      ),
                       blurRadius: 90,
                     ),
                   ],
@@ -134,7 +143,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             Center(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -166,7 +178,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         border: Border.all(color: cardBorder),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.06),
+                            color: Colors.black.withValues(
+                              alpha: isDark ? 0.4 : 0.06,
+                            ),
                             blurRadius: 30,
                             offset: const Offset(0, 10),
                           ),
@@ -222,7 +236,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: isDark ? AppColors.background.withValues(alpha: 0.6) : AppColors.lightSurfaceCard,
+                              color: isDark
+                                  ? AppColors.background.withValues(alpha: 0.6)
+                                  : AppColors.lightSurfaceCard,
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(color: cardBorder),
                             ),
@@ -238,9 +254,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 6),
-                                _buildRequirementItem('Minimum 6 characters long', hasLength),
-                                _buildRequirementItem('At least 1 Capital Letter (A-Z)', hasUpper),
-                                _buildRequirementItem('At least 1 Special Character (!@#\$%^&*)', hasSpecial),
+                                _buildRequirementItem(
+                                  'Minimum 6 characters long',
+                                  hasLength,
+                                ),
+                                _buildRequirementItem(
+                                  'At least 1 Capital Letter (A-Z)',
+                                  hasUpper,
+                                ),
+                                _buildRequirementItem(
+                                  'At least 1 Special Character (!@#\$%^&*)',
+                                  hasSpecial,
+                                ),
                               ],
                             ),
                           ),
@@ -249,7 +274,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           SizedBox(
                             height: 52,
                             child: ElevatedButton(
-                              onPressed: authService.isLoading ? null : _handleRegister,
+                              onPressed: authService.isLoading
+                                  ? null
+                                  : _handleRegister,
                               child: authService.isLoading
                                   ? const SizedBox(
                                       width: 24,

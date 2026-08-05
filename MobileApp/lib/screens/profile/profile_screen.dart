@@ -11,9 +11,15 @@ class ProfileScreen extends StatelessWidget {
   void _showEditProfileModal(BuildContext context, AuthService authService) {
     final user = authService.currentUser;
     final nameController = TextEditingController(text: user?.name ?? '');
-    final phoneController = TextEditingController(text: user?.phoneNumber ?? '');
-    final deliveryAddressController = TextEditingController(text: user?.deliveryAddress ?? '');
-    final billingAddressController = TextEditingController(text: user?.billingAddress ?? '');
+    final phoneController = TextEditingController(
+      text: user?.phoneNumber ?? '',
+    );
+    final deliveryAddressController = TextEditingController(
+      text: user?.deliveryAddress ?? '',
+    );
+    final billingAddressController = TextEditingController(
+      text: user?.billingAddress ?? '',
+    );
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     showModalBottomSheet(
@@ -49,7 +55,12 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
                     IconButton(
-                      icon: Icon(Icons.close, color: isDark ? AppColors.textSecondary : AppColors.lightTextSecondary),
+                      icon: Icon(
+                        Icons.close,
+                        color: isDark
+                            ? AppColors.textSecondary
+                            : AppColors.lightTextSecondary,
+                      ),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ],
@@ -109,7 +120,9 @@ class ProfileScreen extends StatelessWidget {
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Customer details updated successfully!'),
+                            content: Text(
+                              'Customer details updated successfully!',
+                            ),
                             backgroundColor: AppColors.primary,
                           ),
                         );
@@ -133,15 +146,23 @@ class ProfileScreen extends StatelessWidget {
     final user = authService.currentUser;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardBg = isDark ? AppColors.surface : AppColors.lightSurface;
-    final borderColor = isDark ? AppColors.surfaceBorder : AppColors.lightSurfaceBorder;
+    final borderColor = isDark
+        ? AppColors.surfaceBorder
+        : AppColors.lightSurfaceBorder;
     final textColor = isDark ? Colors.white : AppColors.lightTextPrimary;
-    final secondaryTextColor = isDark ? AppColors.textSecondary : AppColors.lightTextSecondary;
+    final secondaryTextColor = isDark
+        ? AppColors.textSecondary
+        : AppColors.lightTextSecondary;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
           'Customer Account',
-          style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
+          style: GoogleFonts.inter(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: textColor,
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -162,7 +183,9 @@ class ProfileScreen extends StatelessWidget {
                     radius: 36,
                     backgroundColor: AppColors.primary.withValues(alpha: 0.2),
                     child: Text(
-                      user != null && user.name.isNotEmpty ? user.name[0].toUpperCase() : 'C',
+                      user != null && user.name.isNotEmpty
+                          ? user.name[0].toUpperCase()
+                          : 'C',
                       style: GoogleFonts.inter(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -189,7 +212,10 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(20),
@@ -197,7 +223,11 @@ class ProfileScreen extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.verified_user, size: 14, color: AppColors.primary),
+                        const Icon(
+                          Icons.verified_user,
+                          size: 14,
+                          color: AppColors.primary,
+                        ),
                         const SizedBox(width: 6),
                         Text(
                           'Authenticated App Account',
@@ -231,21 +261,58 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       Text(
                         'Customer Info & Addresses',
-                        style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.bold, color: textColor),
+                        style: GoogleFonts.inter(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: textColor,
+                        ),
                       ),
                       TextButton.icon(
-                        onPressed: () => _showEditProfileModal(context, authService),
-                        icon: const Icon(Icons.edit_outlined, size: 16, color: AppColors.primary),
-                        label: Text('Edit', style: GoogleFonts.inter(color: AppColors.primary, fontSize: 13, fontWeight: FontWeight.bold)),
+                        onPressed: () =>
+                            _showEditProfileModal(context, authService),
+                        icon: const Icon(
+                          Icons.edit_outlined,
+                          size: 16,
+                          color: AppColors.primary,
+                        ),
+                        label: Text(
+                          'Edit',
+                          style: GoogleFonts.inter(
+                            color: AppColors.primary,
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ],
                   ),
                   Divider(color: borderColor, height: 20),
-                  _buildInfoRow(context, Icons.phone_outlined, 'Phone Number', user?.phoneNumber.isNotEmpty == true ? user!.phoneNumber : 'Not provided'),
+                  _buildInfoRow(
+                    context,
+                    Icons.phone_outlined,
+                    'Phone Number',
+                    user?.phoneNumber.isNotEmpty == true
+                        ? user!.phoneNumber
+                        : 'Not provided',
+                  ),
                   const SizedBox(height: 12),
-                  _buildInfoRow(context, Icons.location_on_outlined, 'Delivery Address', user?.deliveryAddress.isNotEmpty == true ? user!.deliveryAddress : 'Not provided'),
+                  _buildInfoRow(
+                    context,
+                    Icons.location_on_outlined,
+                    'Delivery Address',
+                    user?.deliveryAddress.isNotEmpty == true
+                        ? user!.deliveryAddress
+                        : 'Not provided',
+                  ),
                   const SizedBox(height: 12),
-                  _buildInfoRow(context, Icons.receipt_long_outlined, 'Billing Address', user?.billingAddress.isNotEmpty == true ? user!.billingAddress : 'Not provided'),
+                  _buildInfoRow(
+                    context,
+                    Icons.receipt_long_outlined,
+                    'Billing Address',
+                    user?.billingAddress.isNotEmpty == true
+                        ? user!.billingAddress
+                        : 'Not provided',
+                  ),
                 ],
               ),
             ),
@@ -264,18 +331,29 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.palette_outlined, size: 20, color: AppColors.primary),
+                      const Icon(
+                        Icons.palette_outlined,
+                        size: 20,
+                        color: AppColors.primary,
+                      ),
                       const SizedBox(width: 10),
                       Text(
                         'App Theme & Appearance',
-                        style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.bold, color: textColor),
+                        style: GoogleFonts.inter(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: textColor,
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 4),
                   Text(
                     'Defaults to your device System Theme on initial launch',
-                    style: GoogleFonts.inter(fontSize: 12, color: secondaryTextColor),
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      color: secondaryTextColor,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   Row(
@@ -285,8 +363,10 @@ class ProfileScreen extends StatelessWidget {
                           context,
                           label: 'System',
                           icon: Icons.brightness_auto,
-                          isSelected: themeService.appThemeMode == AppThemeMode.system,
-                          onTap: () => themeService.setThemeMode(AppThemeMode.system),
+                          isSelected:
+                              themeService.appThemeMode == AppThemeMode.system,
+                          onTap: () =>
+                              themeService.setThemeMode(AppThemeMode.system),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -295,8 +375,10 @@ class ProfileScreen extends StatelessWidget {
                           context,
                           label: 'Light',
                           icon: Icons.light_mode_outlined,
-                          isSelected: themeService.appThemeMode == AppThemeMode.light,
-                          onTap: () => themeService.setThemeMode(AppThemeMode.light),
+                          isSelected:
+                              themeService.appThemeMode == AppThemeMode.light,
+                          onTap: () =>
+                              themeService.setThemeMode(AppThemeMode.light),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -305,8 +387,10 @@ class ProfileScreen extends StatelessWidget {
                           context,
                           label: 'Dark',
                           icon: Icons.dark_mode_outlined,
-                          isSelected: themeService.appThemeMode == AppThemeMode.dark,
-                          onTap: () => themeService.setThemeMode(AppThemeMode.dark),
+                          isSelected:
+                              themeService.appThemeMode == AppThemeMode.dark,
+                          onTap: () =>
+                              themeService.setThemeMode(AppThemeMode.dark),
                         ),
                       ),
                     ],
@@ -326,24 +410,69 @@ class ProfileScreen extends StatelessWidget {
               child: Column(
                 children: [
                   ListTile(
-                    leading: const Icon(Icons.router_outlined, color: AppColors.primary),
-                    title: Text('Connected Hydroponic Towers', style: GoogleFonts.inter(color: textColor)),
-                    subtitle: Text('3 Registered Devices', style: GoogleFonts.inter(color: secondaryTextColor, fontSize: 12)),
-                    trailing: Icon(Icons.chevron_right, color: secondaryTextColor),
+                    leading: const Icon(
+                      Icons.router_outlined,
+                      color: AppColors.primary,
+                    ),
+                    title: Text(
+                      'Connected Hydroponic Towers',
+                      style: GoogleFonts.inter(color: textColor),
+                    ),
+                    subtitle: Text(
+                      '3 Registered Devices',
+                      style: GoogleFonts.inter(
+                        color: secondaryTextColor,
+                        fontSize: 12,
+                      ),
+                    ),
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: secondaryTextColor,
+                    ),
                   ),
                   Divider(color: borderColor, height: 1),
                   ListTile(
-                    leading: const Icon(Icons.notifications_active_outlined, color: AppColors.cyanAccent),
-                    title: Text('Telemetry Alerts & Thresholds', style: GoogleFonts.inter(color: textColor)),
-                    subtitle: Text('pH / EC Push Notifications Enabled', style: GoogleFonts.inter(color: secondaryTextColor, fontSize: 12)),
-                    trailing: Icon(Icons.chevron_right, color: secondaryTextColor),
+                    leading: const Icon(
+                      Icons.notifications_active_outlined,
+                      color: AppColors.cyanAccent,
+                    ),
+                    title: Text(
+                      'Telemetry Alerts & Thresholds',
+                      style: GoogleFonts.inter(color: textColor),
+                    ),
+                    subtitle: Text(
+                      'pH / EC Push Notifications Enabled',
+                      style: GoogleFonts.inter(
+                        color: secondaryTextColor,
+                        fontSize: 12,
+                      ),
+                    ),
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: secondaryTextColor,
+                    ),
                   ),
                   Divider(color: borderColor, height: 1),
                   ListTile(
-                    leading: const Icon(Icons.help_outline_rounded, color: Colors.amber),
-                    title: Text('Hydroponic Support & FAQs', style: GoogleFonts.inter(color: textColor)),
-                    subtitle: Text('Contact Gravity Cultivation Specialists', style: GoogleFonts.inter(color: secondaryTextColor, fontSize: 12)),
-                    trailing: Icon(Icons.chevron_right, color: secondaryTextColor),
+                    leading: const Icon(
+                      Icons.help_outline_rounded,
+                      color: Colors.amber,
+                    ),
+                    title: Text(
+                      'Hydroponic Support & FAQs',
+                      style: GoogleFonts.inter(color: textColor),
+                    ),
+                    subtitle: Text(
+                      'Contact Gravity Cultivation Specialists',
+                      style: GoogleFonts.inter(
+                        color: secondaryTextColor,
+                        fontSize: 12,
+                      ),
+                    ),
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: secondaryTextColor,
+                    ),
                   ),
                 ],
               ),
@@ -365,7 +494,11 @@ class ProfileScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.logout_rounded, color: AppColors.danger, size: 20),
+                    const Icon(
+                      Icons.logout_rounded,
+                      color: AppColors.danger,
+                      size: 20,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       'Sign Out of Mobile App',
@@ -394,11 +527,17 @@ class ProfileScreen extends StatelessWidget {
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final activeBg = AppColors.primary.withValues(alpha: isDark ? 0.25 : 0.15);
-    final inactiveBg = isDark ? AppColors.surfaceLight : AppColors.lightSurfaceCard;
+    final inactiveBg = isDark
+        ? AppColors.surfaceLight
+        : AppColors.lightSurfaceCard;
     final activeBorder = AppColors.primary;
-    final inactiveBorder = isDark ? AppColors.surfaceBorder : AppColors.lightSurfaceBorder;
+    final inactiveBorder = isDark
+        ? AppColors.surfaceBorder
+        : AppColors.lightSurfaceBorder;
     final activeTextColor = isDark ? AppColors.primaryLight : AppColors.primary;
-    final inactiveTextColor = isDark ? AppColors.textSecondary : AppColors.lightTextSecondary;
+    final inactiveTextColor = isDark
+        ? AppColors.textSecondary
+        : AppColors.lightTextSecondary;
 
     return InkWell(
       onTap: onTap,
@@ -435,10 +574,17 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(BuildContext context, IconData icon, String label, String value) {
+  Widget _buildInfoRow(
+    BuildContext context,
+    IconData icon,
+    String label,
+    String value,
+  ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? Colors.white : AppColors.lightTextPrimary;
-    final secondaryColor = isDark ? AppColors.textSecondary : AppColors.lightTextSecondary;
+    final secondaryColor = isDark
+        ? AppColors.textSecondary
+        : AppColors.lightTextSecondary;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -456,7 +602,11 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 value,
-                style: GoogleFonts.inter(fontSize: 13, color: textColor, fontWeight: FontWeight.w500),
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  color: textColor,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ],
           ),

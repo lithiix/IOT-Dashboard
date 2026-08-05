@@ -24,7 +24,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 overflow-x-hidden font-sans selection:bg-emerald-500 selection:text-slate-950">
-      
+
       {/* Inject custom CSS keyframes for float & SVG plant animations */}
       <style>{`
         @keyframes float {
@@ -73,7 +73,7 @@ export default function Home() {
               Gravity Core Cultivation
             </span>
           </Link>
-          
+
           <nav className="hidden lg:flex items-center space-x-8">
             <a href="#products" className="text-sm text-slate-350 hover:text-emerald-400 transition-colors duration-200">Products</a>
             <a href="#services" className="text-sm text-slate-350 hover:text-emerald-400 transition-colors duration-200">Services</a>
@@ -154,34 +154,34 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative pt-12 pb-20 md:pt-24 md:pb-32 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          
+
           {/* Hero Content */}
           <div className="lg:col-span-7 text-center lg:text-left space-y-6 sm:space-y-8">
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
               <Zap className="w-3.5 h-3.5 animate-pulse" />
               <span>Next-Gen Hydroponic Systems</span>
             </div>
-            
+
             <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight tracking-tight">
               Cultivate the Future with{' '}
               <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-indigo-400 bg-clip-text text-transparent">
                 Gravity-Defying Tech
               </span>
             </h1>
-            
+
             <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto lg:mx-0">
               Grow premium, high-yield organic crops indoors or outdoors. Our fully automated Hydroponic Towers optimize nutrient delivery using IoT sensors and AI-driven growth telemetry.
             </p>
 
             <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-              <a 
+              <a
                 href="#products"
                 className="px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-bold hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center cursor-pointer shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)]"
               >
                 Get Your Tower Now
                 <ArrowRight className="w-5 h-5 ml-2" />
               </a>
-              <Link 
+              <Link
                 href="/dashboard"
                 className="px-8 py-4 rounded-xl bg-slate-900 border border-white/5 hover:border-slate-800 text-slate-100 font-semibold hover:bg-slate-900/60 transition-all duration-200 flex items-center justify-center cursor-pointer"
               >
@@ -209,9 +209,9 @@ export default function Home() {
           {/* Hero Product Image (Hydroponic Tower Card replicated precisely from image_fc8775.png) */}
           <div className="lg:col-span-5 relative flex justify-center">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-cyan-500/10 rounded-full blur-[100px] -z-10" />
-            
+
             <div className="bg-[#070e17] border border-cyan-500/30 rounded-[28px] p-5 shadow-[0_0_20px_rgba(6,182,212,0.15)] w-full max-w-[440px] relative overflow-hidden group animate-float">
-              
+
               <div className="w-full h-[420px] rounded-2xl border border-white/5 bg-slate-950/80 flex items-center justify-center p-4 relative overflow-hidden group-hover:scale-[1.01] transition-transform duration-500">
                 <svg viewBox="0 0 200 400" className="w-full h-full select-none pointer-events-none">
                   <defs>
@@ -275,11 +275,11 @@ export default function Home() {
                   {/* Glowing LED grow lights bars */}
                   <line x1="40" y1="50" x2="40" y2="330" stroke="#06b6d4" strokeWidth="1.5" opacity="0.5" strokeDasharray="3 3" />
                   <line x1="160" y1="50" x2="160" y2="330" stroke="#06b6d4" strokeWidth="1.5" opacity="0.5" strokeDasharray="3 3" />
-                  
+
                   <circle cx="40" cy="50" r="3" fill="#06b6d4" className="animate-pulse" />
                   <circle cx="40" cy="190" r="3" fill="#06b6d4" className="animate-pulse" />
                   <circle cx="40" cy="330" r="3" fill="#06b6d4" className="animate-pulse" />
-                  
+
                   <circle cx="160" cy="50" r="3" fill="#06b6d4" className="animate-pulse" />
                   <circle cx="160" cy="190" r="3" fill="#06b6d4" className="animate-pulse" />
                   <circle cx="160" cy="330" r="3" fill="#06b6d4" className="animate-pulse" />
@@ -312,9 +312,9 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
+
             {/* Feature 1: Smart Hydroponic Towers */}
-            <div 
+            <div
               className="bg-[#070e17] border border-white/5 hover:border-emerald-500/30 rounded-3xl p-8 hover:-translate-y-1 transition-all duration-300 group shadow-md"
             >
               <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all duration-300">
@@ -327,7 +327,7 @@ export default function Home() {
             </div>
 
             {/* Feature 2: Real-time Plant Monitoring */}
-            <div 
+            <div
               className="bg-[#070e17] border border-white/5 hover:border-emerald-500/30 rounded-3xl p-8 hover:-translate-y-1 transition-all duration-300 group shadow-md"
             >
               <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all duration-300">
@@ -340,7 +340,7 @@ export default function Home() {
             </div>
 
             {/* Feature 3: AI Growth Recommendations */}
-            <div 
+            <div
               className="bg-[#070e17] border border-white/5 hover:border-emerald-500/30 rounded-3xl p-8 hover:-translate-y-1 transition-all duration-300 group shadow-md"
             >
               <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all duration-300">
@@ -359,7 +359,7 @@ export default function Home() {
       {/* Services & Maintenance Section */}
       <section id="services" className="py-24 px-6 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-          
+
           <div className="lg:col-span-6 space-y-8">
             <div className="space-y-4">
               <h2 className="text-emerald-400 text-sm font-bold uppercase tracking-widest">Worry-Free Operations</h2>
@@ -398,12 +398,12 @@ export default function Home() {
 
           {/* Clean 2-Card Image Layout matching reference designs (Precise image_fc8775 formatting) */}
           <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
-            
+
             {/* Image 1 Card: Smart Monitoring Setup */}
             <div className="bg-[#070e17] border border-cyan-500/30 rounded-[28px] p-5 shadow-[0_0_15px_rgba(6,182,212,0.15)] group">
-              <img 
-                src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?q=80&w=600" 
-                alt="Green plants growing inside futuristic indoor farm" 
+              <img
+                src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?q=80&w=600"
+                alt="Green plants growing inside futuristic indoor farm"
                 className="w-full h-[200px] object-cover rounded-2xl border border-white/5"
               />
               <div className="flex items-center justify-between border-t border-slate-800/80 pt-4 mt-4 text-xs font-semibold">
@@ -417,9 +417,9 @@ export default function Home() {
 
             {/* Image 2 Card: AI Recommendation Setup */}
             <div className="bg-[#070e17] border border-cyan-500/30 rounded-[28px] p-5 shadow-[0_0_15px_rgba(6,182,212,0.15)] group">
-              <img 
-                src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?q=80&w=600" 
-                alt="Lush leafy greens inside automated urban farming facility" 
+              <img
+                src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?q=80&w=600"
+                alt="Lush leafy greens inside automated urban farming facility"
                 className="w-full h-[200px] object-cover rounded-2xl border border-white/5"
               />
               <div className="flex items-center justify-between border-t border-slate-800/80 pt-4 mt-4 text-xs font-semibold">
@@ -456,7 +456,7 @@ export default function Home() {
         <div className="relative rounded-3xl bg-gradient-to-tr from-emerald-950 via-slate-900 to-indigo-950 border border-white/5 p-8 md:p-16 text-center space-y-8 overflow-hidden shadow-2xl">
           <div className="absolute -top-32 -left-32 w-80 h-80 bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none" />
           <div className="absolute -bottom-32 -right-32 w-80 h-80 bg-indigo-500/10 rounded-full blur-[80px] pointer-events-none" />
-          
+
           <h2 className="text-3xl md:text-5xl font-extrabold text-white max-w-2xl mx-auto leading-tight p-4">
             Ready to Accelerate Your Harvest?
           </h2>
@@ -468,7 +468,7 @@ export default function Home() {
             <button className="w-full sm:w-auto px-8 py-4 rounded-xl bg-emerald-500 text-slate-950 font-bold hover:bg-emerald-400 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer shadow-[0_0_15px_rgba(16,185,129,0.3)]">
               Book a Consultation
             </button>
-            <Link 
+            <Link
               href="/dashboard"
               className="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-800 border border-white/5 hover:border-emerald-500/40 text-emerald-400 font-semibold flex items-center justify-center hover:scale-105 transition-all duration-200 cursor-pointer"
             >
@@ -488,7 +488,7 @@ export default function Home() {
             </div>
             <span className="font-bold text-white text-sm">Gravity Core Cultivation</span>
           </div>
-          
+
           <div className="flex flex-wrap justify-center gap-8 text-xs text-slate-400">
             <a href="#products" className="hover:text-emerald-400 transition-colors">Products</a>
             <a href="#services" className="hover:text-emerald-400 transition-colors">Services</a>

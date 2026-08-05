@@ -7,7 +7,7 @@ class AppColors {
   static const Color surface = Color(0xFF0F172A); // Slate 900
   static const Color surfaceLight = Color(0xFF1E293B); // Slate 800
   static const Color surfaceBorder = Color(0x1FFFFFFF); // White/10
-  
+
   // Light Palette
   static const Color lightBackground = Color(0xFFF8FAFC); // Slate 50
   static const Color lightSurface = Colors.white;
@@ -44,9 +44,7 @@ class AppTheme {
         surface: AppColors.lightSurface,
         error: AppColors.danger,
       ),
-      textTheme: GoogleFonts.interTextTheme(
-        ThemeData.light().textTheme,
-      ).apply(
+      textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme).apply(
         bodyColor: AppColors.lightTextPrimary,
         displayColor: AppColors.lightTextPrimary,
       ),
@@ -71,7 +69,10 @@ class AppTheme {
         hintStyle: const TextStyle(color: AppColors.lightTextMuted),
         prefixIconColor: AppColors.primary,
         suffixIconColor: AppColors.lightTextSecondary,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 16,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: AppColors.lightSurfaceBorder),
@@ -117,9 +118,7 @@ class AppTheme {
         surface: AppColors.surface,
         error: AppColors.danger,
       ),
-      textTheme: GoogleFonts.interTextTheme(
-        ThemeData.dark().textTheme,
-      ).apply(
+      textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).apply(
         bodyColor: AppColors.textPrimary,
         displayColor: AppColors.textPrimary,
       ),
@@ -143,7 +142,10 @@ class AppTheme {
         hintStyle: const TextStyle(color: AppColors.textMuted),
         prefixIconColor: AppColors.primaryLight,
         suffixIconColor: AppColors.textSecondary,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 16,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: AppColors.surfaceBorder),

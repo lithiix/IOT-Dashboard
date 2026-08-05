@@ -41,7 +41,7 @@ export function useRealtimeData(path: string) {
             time: new Date(item.recorded_at).getTime()
           };
         });
-        
+
         if (path.includes('lionbit')) {
           setData(logsMap);
         } else {
@@ -89,9 +89,9 @@ export function useRealtimeList(path: string) {
 
   const list = data
     ? Object.entries(data).map(([key, value]) => ({
-        id: key,
-        ...(value as Record<string, any>)
-      }))
+      id: key,
+      ...(value as Record<string, any>)
+    }))
     : [];
 
   return { list, loading, error };

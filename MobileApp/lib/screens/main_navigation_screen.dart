@@ -25,8 +25,12 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final navBg = isDark ? AppColors.surface : AppColors.lightSurface;
-    final navBorder = isDark ? AppColors.surfaceBorder : AppColors.lightSurfaceBorder;
-    final unselectedColor = isDark ? AppColors.textMuted : AppColors.lightTextSecondary;
+    final navBorder = isDark
+        ? AppColors.surfaceBorder
+        : AppColors.lightSurfaceBorder;
+    final unselectedColor = isDark
+        ? AppColors.textMuted
+        : AppColors.lightTextSecondary;
 
     final List<Widget> pages = [
       HomeScreen(onNavigateToDashboard: _navigateToDashboard),
@@ -36,17 +40,12 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
     return Scaffold(
       body: SafeArea(
-        child: IndexedStack(
-          index: _currentIndex,
-          children: pages,
-        ),
+        child: IndexedStack(index: _currentIndex, children: pages),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: navBg,
-          border: Border(
-            top: BorderSide(color: navBorder, width: 1),
-          ),
+          border: Border(top: BorderSide(color: navBorder, width: 1)),
         ),
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
@@ -58,7 +57,10 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           backgroundColor: navBg,
           selectedItemColor: AppColors.primary,
           unselectedItemColor: unselectedColor,
-          selectedLabelStyle: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 12),
+          selectedLabelStyle: GoogleFonts.inter(
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+          ),
           unselectedLabelStyle: GoogleFonts.inter(fontSize: 11),
           type: BottomNavigationBarType.fixed,
           items: const [

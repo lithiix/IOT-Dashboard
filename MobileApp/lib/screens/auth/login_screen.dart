@@ -50,9 +50,15 @@ class _LoginScreenState extends State<LoginScreen> {
     final authService = Provider.of<AuthService>(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? Colors.white : AppColors.lightTextPrimary;
-    final secondaryTextColor = isDark ? AppColors.textSecondary : AppColors.lightTextSecondary;
-    final cardBg = isDark ? AppColors.surface.withValues(alpha: 0.85) : AppColors.lightSurface;
-    final cardBorder = isDark ? AppColors.surfaceBorder : AppColors.lightSurfaceBorder;
+    final secondaryTextColor = isDark
+        ? AppColors.textSecondary
+        : AppColors.lightTextSecondary;
+    final cardBg = isDark
+        ? AppColors.surface.withValues(alpha: 0.85)
+        : AppColors.lightSurface;
+    final cardBorder = isDark
+        ? AppColors.surfaceBorder
+        : AppColors.lightSurfaceBorder;
 
     return Scaffold(
       body: Stack(
@@ -66,10 +72,14 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 300,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.primary.withValues(alpha: isDark ? 0.15 : 0.08),
+                color: AppColors.primary.withValues(
+                  alpha: isDark ? 0.15 : 0.08,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primary.withValues(alpha: isDark ? 0.15 : 0.08),
+                    color: AppColors.primary.withValues(
+                      alpha: isDark ? 0.15 : 0.08,
+                    ),
                     blurRadius: 100,
                   ),
                 ],
@@ -84,10 +94,14 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 300,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.cyanAccent.withValues(alpha: isDark ? 0.15 : 0.08),
+                color: AppColors.cyanAccent.withValues(
+                  alpha: isDark ? 0.15 : 0.08,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.cyanAccent.withValues(alpha: isDark ? 0.15 : 0.08),
+                    color: AppColors.cyanAccent.withValues(
+                      alpha: isDark ? 0.15 : 0.08,
+                    ),
                     blurRadius: 100,
                   ),
                 ],
@@ -161,7 +175,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         border: Border.all(color: cardBorder),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.06),
+                            color: Colors.black.withValues(
+                              alpha: isDark ? 0.4 : 0.06,
+                            ),
                             blurRadius: 30,
                             offset: const Offset(0, 10),
                           ),
@@ -228,7 +244,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           SizedBox(
                             height: 54,
                             child: ElevatedButton(
-                              onPressed: authService.isLoading ? null : _handleLogin,
+                              onPressed: authService.isLoading
+                                  ? null
+                                  : _handleLogin,
                               child: authService.isLoading
                                   ? const SizedBox(
                                       width: 24,
@@ -239,7 +257,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                     )
                                   : Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           'Sign In to App',
@@ -250,7 +269,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                           ),
                                         ),
                                         const SizedBox(width: 8),
-                                        const Icon(Icons.arrow_forward_rounded, size: 20, color: Colors.white),
+                                        const Icon(
+                                          Icons.arrow_forward_rounded,
+                                          size: 20,
+                                          color: Colors.white,
+                                        ),
                                       ],
                                     ),
                             ),

@@ -104,10 +104,10 @@ export default function AdminPanel() {
   const [newPasswordInput, setNewPasswordInput] = useState<string>('');
   const [confirmPasswordInput, setConfirmPasswordInput] = useState<string>('');
   const [profileSubmitting, setProfileSubmitting] = useState<boolean>(false);
-  
+
   // Selected Customer Modal State
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
-  
+
   // Reject Reason Modal State
   const [rejectingCustomerId, setRejectingCustomerId] = useState<string | null>(null);
   const [rejectionReasonInput, setRejectionReasonInput] = useState('');
@@ -209,16 +209,16 @@ export default function AdminPanel() {
   // Process data from Firebase/Mock
   const customersList: Customer[] = rawCustomers
     ? Object.entries(rawCustomers).map(([key, val]: [string, any]) => ({
-        id: key,
-        ...val
-      }))
+      id: key,
+      ...val
+    }))
     : [];
 
   const devicesList: Device[] = rawDevices
     ? Object.entries(rawDevices).map(([key, val]: [string, any]) => ({
-        id: key,
-        ...val
-      }))
+      id: key,
+      ...val
+    }))
     : [];
 
   // Metrics calculation
@@ -275,7 +275,7 @@ export default function AdminPanel() {
   const handleConfirmReject = async () => {
     if (!rejectingCustomerId) return;
     const targetCustomer = customersList.find(c => c.id === rejectingCustomerId);
-    
+
     const res = await updateData(`customers/${rejectingCustomerId}`, {
       status: 'rejected',
       rejectedAt: new Date().toISOString(),
@@ -416,13 +416,13 @@ export default function AdminPanel() {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-slate-950 text-slate-100 font-sans flex items-center justify-center p-6 relative overflow-hidden selection:bg-emerald-500 selection:text-slate-950">
-        
+
         {/* Ambient Glows */}
         <div className="absolute top-1/4 left-1/3 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[140px] pointer-events-none -z-10" />
         <div className="absolute bottom-1/4 right-1/3 w-[450px] h-[450px] bg-teal-500/10 rounded-full blur-[140px] pointer-events-none -z-10" />
 
         <div className="max-w-md w-full space-y-6">
-          
+
           {/* Brand Header */}
           <div className="text-center space-y-3">
             <Link href="/" className="inline-flex items-center space-x-3 group">
@@ -447,7 +447,7 @@ export default function AdminPanel() {
 
           {/* Login Card */}
           <div className="bg-slate-900/80 border border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-xl shadow-2xl space-y-5 relative">
-            
+
             {authError && (
               <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start space-x-2.5 animate-in fade-in">
                 <ShieldAlert className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
@@ -456,7 +456,7 @@ export default function AdminPanel() {
             )}
 
             <form onSubmit={handleAdminLogin} className="space-y-4">
-              
+
               {/* Email Input */}
               <div>
                 <label className="text-xs font-semibold text-slate-300 block mb-1.5">
@@ -622,7 +622,7 @@ export default function AdminPanel() {
 
       {/* Main Container */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
-        
+
         {/* Page Title & Quick Add Action */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -647,7 +647,7 @@ export default function AdminPanel() {
 
         {/* KPI Metrics Dashboard Bar */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-          
+
           {/* Metric 1: Total Customers */}
           <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/60 border border-white/5 backdrop-blur-sm relative overflow-hidden group hover:border-white/10 transition-all">
             <div className="flex items-center justify-between">
@@ -661,11 +661,10 @@ export default function AdminPanel() {
           </div>
 
           {/* Metric 2: Pending Approvals */}
-          <div className={`p-4 sm:p-5 rounded-2xl border backdrop-blur-sm relative overflow-hidden transition-all ${
-            pendingCount > 0
+          <div className={`p-4 sm:p-5 rounded-2xl border backdrop-blur-sm relative overflow-hidden transition-all ${pendingCount > 0
               ? 'bg-amber-500/5 border-amber-500/30 shadow-lg shadow-amber-500/5'
               : 'bg-slate-900/60 border-white/5'
-          }`}>
+            }`}>
             <div className="flex items-center justify-between">
               <span className="text-[10px] sm:text-xs font-medium text-amber-400 uppercase tracking-wider">Pending</span>
               <div className="p-1.5 sm:p-2 rounded-xl bg-amber-500/10 text-amber-400">
@@ -719,11 +718,10 @@ export default function AdminPanel() {
           <div className="flex flex-col sm:flex-row gap-2 bg-slate-900/80 p-1 rounded-xl border border-white/5 w-full md:w-auto">
             <button
               onClick={() => setActiveTab('customers')}
-              className={`w-full sm:w-auto px-4 sm:px-5 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center space-x-2 cursor-pointer ${
-                activeTab === 'customers'
+              className={`w-full sm:w-auto px-4 sm:px-5 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center space-x-2 cursor-pointer ${activeTab === 'customers'
                   ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 shadow-md'
                   : 'text-slate-400 hover:text-white'
-              }`}
+                }`}
             >
               <Users className="w-4 h-4" />
               <span>Customer Account Reviews</span>
@@ -736,11 +734,10 @@ export default function AdminPanel() {
 
             <button
               onClick={() => setActiveTab('devices')}
-              className={`w-full sm:w-auto px-4 sm:px-5 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center space-x-2 cursor-pointer ${
-                activeTab === 'devices'
+              className={`w-full sm:w-auto px-4 sm:px-5 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center space-x-2 cursor-pointer ${activeTab === 'devices'
                   ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 shadow-md'
                   : 'text-slate-400 hover:text-white'
-              }`}
+                }`}
             >
               <Cpu className="w-4 h-4" />
               <span>Device ID Manager & Mapping</span>
@@ -748,11 +745,10 @@ export default function AdminPanel() {
 
             <button
               onClick={() => setActiveTab('settings')}
-              className={`w-full sm:w-auto px-4 sm:px-5 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center space-x-2 cursor-pointer ${
-                activeTab === 'settings'
+              className={`w-full sm:w-auto px-4 sm:px-5 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center space-x-2 cursor-pointer ${activeTab === 'settings'
                   ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 shadow-md'
                   : 'text-slate-400 hover:text-white'
-              }`}
+                }`}
             >
               <Lock className="w-4 h-4" />
               <span>Super Admin Security</span>
@@ -783,7 +779,7 @@ export default function AdminPanel() {
         {/* TAB 1: CUSTOMER ACCOUNT REVIEWS */}
         {activeTab === 'customers' && (
           <div className="space-y-6">
-            
+
             {/* Filter Tabs for Customer Status */}
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center space-x-2">
@@ -794,17 +790,16 @@ export default function AdminPanel() {
                   <button
                     key={st}
                     onClick={() => setStatusFilter(st)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all cursor-pointer ${
-                      statusFilter === st
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all cursor-pointer ${statusFilter === st
                         ? st === 'pending'
                           ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
                           : st === 'approved'
-                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                          : st === 'rejected'
-                          ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
-                          : 'bg-white/10 text-white border border-white/20'
+                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                            : st === 'rejected'
+                              ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                              : 'bg-white/10 text-white border border-white/20'
                         : 'bg-slate-900/60 text-slate-400 border border-white/5 hover:text-slate-200'
-                    }`}
+                      }`}
                   >
                     {st} {st === 'pending' && `(${pendingCount})`}
                   </button>
@@ -849,15 +844,14 @@ export default function AdminPanel() {
                           <h3 className="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">
                             {customer.name}
                           </h3>
-                          
+
                           {/* Status Badge */}
-                          <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 ${
-                            customer.status === 'approved'
+                          <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 ${customer.status === 'approved'
                               ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                               : customer.status === 'pending'
-                              ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30 animate-pulse'
-                              : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                          }`}>
+                                ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30 animate-pulse'
+                                : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                            }`}>
                             {customer.status === 'approved' && <CheckCircle2 className="w-3.5 h-3.5" />}
                             {customer.status === 'pending' && <Clock className="w-3.5 h-3.5" />}
                             {customer.status === 'rejected' && <XCircle className="w-3.5 h-3.5" />}
@@ -917,7 +911,7 @@ export default function AdminPanel() {
 
                       {/* Right: Actions */}
                       <div className="flex items-center gap-2 border-t md:border-t-0 pt-4 md:pt-0 border-white/5">
-                        
+
                         {/* ACCEPT BUTTON */}
                         {customer.status !== 'approved' && (
                           <button
@@ -1012,13 +1006,12 @@ export default function AdminPanel() {
                             <span className="px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 font-mono text-xs font-bold">
                               {device.deviceId || device.id}
                             </span>
-                            <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wider ${
-                              device.status === 'online'
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase tracking-wider ${device.status === 'online'
                                 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                                 : device.status === 'offline'
-                                ? 'bg-slate-800 text-slate-400 border border-white/5'
-                                : 'bg-purple-500/10 text-purple-300 border border-purple-500/20'
-                            }`}>
+                                  ? 'bg-slate-800 text-slate-400 border border-white/5'
+                                  : 'bg-purple-500/10 text-purple-300 border border-purple-500/20'
+                              }`}>
                               {device.status}
                             </span>
                           </div>
@@ -1194,7 +1187,7 @@ export default function AdminPanel() {
       {selectedCustomer && (
         <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-slate-900 border border-white/10 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-6 shadow-2xl relative animate-in fade-in zoom-in-95">
-            
+
             <button
               onClick={() => setSelectedCustomer(null)}
               className="absolute top-4 right-4 p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition-colors"
@@ -1204,13 +1197,12 @@ export default function AdminPanel() {
 
             <div className="space-y-2">
               <div className="flex items-center space-x-3">
-                <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
-                  selectedCustomer.status === 'approved'
+                <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${selectedCustomer.status === 'approved'
                     ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                     : selectedCustomer.status === 'pending'
-                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-                    : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                }`}>
+                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                      : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                  }`}>
                   {selectedCustomer.status}
                 </span>
                 <span className="text-xs text-slate-500 font-mono">ID: {selectedCustomer.id}</span>
@@ -1500,13 +1492,12 @@ export default function AdminPanel() {
       {/* TOAST NOTIFICATION FLOATER */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom-5 fade-in">
-          <div className={`px-4 py-3 rounded-xl border text-xs font-semibold shadow-2xl flex items-center space-x-2.5 ${
-            toastMessage.type === 'success'
+          <div className={`px-4 py-3 rounded-xl border text-xs font-semibold shadow-2xl flex items-center space-x-2.5 ${toastMessage.type === 'success'
               ? 'bg-emerald-950 border-emerald-500/40 text-emerald-200'
               : toastMessage.type === 'info'
-              ? 'bg-slate-900 border-white/20 text-slate-100'
-              : 'bg-rose-950 border-rose-500/40 text-rose-200'
-          }`}>
+                ? 'bg-slate-900 border-white/20 text-slate-100'
+                : 'bg-rose-950 border-rose-500/40 text-rose-200'
+            }`}>
             {toastMessage.type === 'success' && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
             {toastMessage.type === 'info' && <Sparkles className="w-4 h-4 text-cyan-400" />}
             {toastMessage.type === 'error' && <AlertCircle className="w-4 h-4 text-rose-400" />}

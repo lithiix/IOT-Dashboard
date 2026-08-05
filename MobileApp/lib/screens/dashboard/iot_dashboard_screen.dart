@@ -39,7 +39,9 @@ class _IotDashboardScreenState extends State<IotDashboardScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final modalBg = isDark ? AppColors.surface : AppColors.lightSurface;
     final textColor = isDark ? Colors.white : AppColors.lightTextPrimary;
-    final secondaryTextColor = isDark ? AppColors.textSecondary : AppColors.lightTextSecondary;
+    final secondaryTextColor = isDark
+        ? AppColors.textSecondary
+        : AppColors.lightTextSecondary;
 
     showModalBottomSheet(
       context: context,
@@ -76,10 +78,14 @@ class _IotDashboardScreenState extends State<IotDashboardScreen> {
                 final isSelected = device['id'] == _selectedDevice;
                 final itemBg = isSelected
                     ? AppColors.primary.withValues(alpha: isDark ? 0.2 : 0.12)
-                    : (isDark ? AppColors.surfaceLight : AppColors.lightSurfaceCard);
+                    : (isDark
+                          ? AppColors.surfaceLight
+                          : AppColors.lightSurfaceCard);
                 final itemBorder = isSelected
                     ? AppColors.primary
-                    : (isDark ? AppColors.surfaceBorder : AppColors.lightSurfaceBorder);
+                    : (isDark
+                          ? AppColors.surfaceBorder
+                          : AppColors.lightSurfaceBorder);
 
                 return Container(
                   margin: const EdgeInsets.only(bottom: 10),
@@ -91,28 +97,41 @@ class _IotDashboardScreenState extends State<IotDashboardScreen> {
                   child: ListTile(
                     leading: Icon(
                       Icons.router_outlined,
-                      color: isSelected ? AppColors.primary : secondaryTextColor,
+                      color: isSelected
+                          ? AppColors.primary
+                          : secondaryTextColor,
                     ),
                     title: Text(
                       '${device['name']} (${device['id']})',
                       style: GoogleFonts.inter(
                         color: isSelected ? AppColors.primary : textColor,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                       ),
                     ),
                     subtitle: Text(
                       device['location']!,
-                      style: GoogleFonts.inter(fontSize: 11, color: secondaryTextColor),
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        color: secondaryTextColor,
+                      ),
                     ),
                     trailing: isSelected
-                        ? const Icon(Icons.check_circle, color: AppColors.primary, size: 20)
+                        ? const Icon(
+                            Icons.check_circle,
+                            color: AppColors.primary,
+                            size: 20,
+                          )
                         : null,
                     onTap: () {
                       setState(() => _selectedDevice = device['id']!);
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Switched active telemetry node to ${device['id']} (${device['name']})'),
+                          content: Text(
+                            'Switched active telemetry node to ${device['id']} (${device['name']})',
+                          ),
                           backgroundColor: AppColors.primary,
                         ),
                       );
@@ -136,9 +155,13 @@ class _IotDashboardScreenState extends State<IotDashboardScreen> {
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardBg = isDark ? AppColors.surface : AppColors.lightSurface;
-    final cardBorder = isDark ? AppColors.surfaceBorder : AppColors.lightSurfaceBorder;
+    final cardBorder = isDark
+        ? AppColors.surfaceBorder
+        : AppColors.lightSurfaceBorder;
     final textColor = isDark ? Colors.white : AppColors.lightTextPrimary;
-    final secondaryTextColor = isDark ? AppColors.textSecondary : AppColors.lightTextSecondary;
+    final secondaryTextColor = isDark
+        ? AppColors.textSecondary
+        : AppColors.lightTextSecondary;
 
     return Scaffold(
       appBar: AppBar(
@@ -149,7 +172,11 @@ class _IotDashboardScreenState extends State<IotDashboardScreen> {
         ),
         title: Text(
           'IoT Aqua & Weather Dashboard',
-          style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
+          style: GoogleFonts.inter(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: textColor,
+          ),
         ),
         actions: [
           Padding(
@@ -163,309 +190,359 @@ class _IotDashboardScreenState extends State<IotDashboardScreen> {
           onRefresh: () async {
             await Future.delayed(const Duration(milliseconds: 600));
           },
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header Summary Card
-              Container(
-                padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(
-                  color: cardBg,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: cardBorder),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header Summary Card
+                Container(
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    color: cardBg,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: cardBorder),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: const Icon(
+                          Icons.sensors_rounded,
+                          color: AppColors.primary,
+                          size: 28,
+                        ),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Hydroponic Node $_selectedDevice',
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: textColor,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              telemetryService.lastDataUpdate != null
+                                  ? 'Last sync: ${DateTime.fromMillisecondsSinceEpoch(telemetryService.lastDataUpdate!).toString().substring(11, 19)}'
+                                  : 'Connecting to sensor stream...',
+                              style: GoogleFonts.inter(
+                                fontSize: 12,
+                                color: secondaryTextColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Row(
+                const SizedBox(height: 24),
+
+                // Sensor Metric Cards Grid
+                Text(
+                  'Live Telemetry Metrics',
+                  style: GoogleFonts.inter(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: textColor,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  childAspectRatio: 1.3,
+                  crossAxisSpacing: 14,
+                  mainAxisSpacing: 14,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: const Icon(
-                        Icons.sensors_rounded,
-                        color: AppColors.primary,
-                        size: 28,
-                      ),
+                    _buildMetricCard(
+                      context,
+                      title: 'pH Level',
+                      value: latest != null
+                          ? latest.ph.toStringAsFixed(2)
+                          : '--',
+                      unit: 'pH',
+                      isOptimal: latest?.isPhOptimal ?? true,
+                      icon: Icons.science_outlined,
+                      color: AppColors.primary,
                     ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    _buildMetricCard(
+                      context,
+                      title: 'Conductivity (EC)',
+                      value: latest != null
+                          ? latest.ec.toStringAsFixed(2)
+                          : '--',
+                      unit: 'mS/cm',
+                      isOptimal: latest?.isEcOptimal ?? true,
+                      icon: Icons.bolt_outlined,
+                      color: AppColors.cyanAccent,
+                    ),
+                    _buildMetricCard(
+                      context,
+                      title: 'Dissolved O₂',
+                      value: latest != null
+                          ? latest.oxygen.toStringAsFixed(1)
+                          : '--',
+                      unit: 'mg/L',
+                      isOptimal: latest?.isOxygenOptimal ?? true,
+                      icon: Icons.water_drop_outlined,
+                      color: Colors.blueAccent,
+                    ),
+                    _buildMetricCard(
+                      context,
+                      title: 'Water Temp',
+                      value: latest != null
+                          ? latest.waterTemp.toStringAsFixed(1)
+                          : '--',
+                      unit: '°C',
+                      isOptimal: latest?.isWaterTempOptimal ?? true,
+                      icon: Icons.thermostat_outlined,
+                      color: Colors.orangeAccent,
+                    ),
+                    _buildMetricCard(
+                      context,
+                      title: 'Env Temp',
+                      value: latest != null
+                          ? latest.envTemp.toStringAsFixed(1)
+                          : '--',
+                      unit: '°C',
+                      isOptimal: latest?.isEnvTempOptimal ?? true,
+                      icon: Icons.wb_sunny_outlined,
+                      color: Colors.amber,
+                    ),
+                    _buildMetricCard(
+                      context,
+                      title: 'Env Humidity',
+                      value: latest != null
+                          ? latest.envHumidity.toStringAsFixed(1)
+                          : '--',
+                      unit: '%',
+                      isOptimal: latest?.isEnvHumidityOptimal ?? true,
+                      icon: Icons.opacity_outlined,
+                      color: Colors.teal,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 28),
+
+                // Interactive Historical Telemetry Graph (fl_chart)
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: cardBg,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: cardBorder),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Hydroponic Node $_selectedDevice',
+                            'Telemetry Trend Chart',
                             style: GoogleFonts.inter(
-                              fontSize: 14,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: textColor,
                             ),
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            telemetryService.lastDataUpdate != null
-                                ? 'Last sync: ${DateTime.fromMillisecondsSinceEpoch(telemetryService.lastDataUpdate!).toString().substring(11, 19)}'
-                                : 'Connecting to sensor stream...',
+                          DropdownButton<String>(
+                            value: _selectedMetricForChart,
+                            dropdownColor: isDark
+                                ? AppColors.surfaceLight
+                                : AppColors.lightSurfaceCard,
                             style: GoogleFonts.inter(
-                              fontSize: 12,
-                              color: secondaryTextColor,
+                              color: AppColors.primary,
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
                             ),
+                            underline: const SizedBox(),
+                            items: const [
+                              DropdownMenuItem(
+                                value: 'ph',
+                                child: Text('pH Level'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'ec',
+                                child: Text('Conductivity (EC)'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'oxygen',
+                                child: Text('Dissolved Oxygen'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'waterTemp',
+                                child: Text('Water Temp (°C)'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'envTemp',
+                                child: Text('Env Temp (°C)'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'envHumidity',
+                                child: Text('Humidity (%)'),
+                              ),
+                            ],
+                            onChanged: (val) {
+                              if (val != null) {
+                                setState(() => _selectedMetricForChart = val);
+                              }
+                            },
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        height: 200,
+                        child: logs.isEmpty
+                            ? const Center(child: CircularProgressIndicator())
+                            : _buildTelemetryChart(context, logs),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24),
+                const SizedBox(height: 28),
 
-              // Sensor Metric Cards Grid
-              Text(
-                'Live Telemetry Metrics',
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: textColor,
+                // Actuator & Relays Control Toggles
+                Text(
+                  'Device Controls & Actuators',
+                  style: GoogleFonts.inter(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: textColor,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                childAspectRatio: 1.3,
-                crossAxisSpacing: 14,
-                mainAxisSpacing: 14,
-                children: [
-                  _buildMetricCard(
-                    context,
-                    title: 'pH Level',
-                    value: latest != null ? latest.ph.toStringAsFixed(2) : '--',
-                    unit: 'pH',
-                    isOptimal: latest?.isPhOptimal ?? true,
-                    icon: Icons.science_outlined,
-                    color: AppColors.primary,
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: cardBg,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: cardBorder),
                   ),
-                  _buildMetricCard(
-                    context,
-                    title: 'Conductivity (EC)',
-                    value: latest != null ? latest.ec.toStringAsFixed(2) : '--',
-                    unit: 'mS/cm',
-                    isOptimal: latest?.isEcOptimal ?? true,
-                    icon: Icons.bolt_outlined,
-                    color: AppColors.cyanAccent,
+                  child: Column(
+                    children: [
+                      _buildControlRow(
+                        context,
+                        title: 'Auto Nutrient Dosing Pump',
+                        subtitle:
+                            'Doses A&B liquid nutrients based on EC targets',
+                        value: telemetryService.nutrientPumpActive,
+                        onChanged: telemetryService.toggleNutrientPump,
+                        icon: Icons.science,
+                      ),
+                      Divider(color: cardBorder, height: 24),
+                      _buildControlRow(
+                        context,
+                        title: 'Water Recirculation Pump',
+                        subtitle: 'Continuous aeration and roots hydration',
+                        value: telemetryService.waterPumpActive,
+                        onChanged: telemetryService.toggleWaterPump,
+                        icon: Icons.waves,
+                      ),
+                      Divider(color: cardBorder, height: 24),
+                      _buildControlRow(
+                        context,
+                        title: 'LED Grow Lights Array',
+                        subtitle: '16h active schedule full spectrum',
+                        value: telemetryService.growLightsActive,
+                        onChanged: telemetryService.toggleGrowLights,
+                        icon: Icons.light_mode,
+                      ),
+                      Divider(color: cardBorder, height: 24),
+                      _buildControlRow(
+                        context,
+                        title: 'Exhaust & Micro-Climate Fan',
+                        subtitle: 'Air circulation and humidity venting',
+                        value: telemetryService.exhaustFanActive,
+                        onChanged: telemetryService.toggleExhaustFan,
+                        icon: Icons.air,
+                      ),
+                    ],
                   ),
-                  _buildMetricCard(
-                    context,
-                    title: 'Dissolved O₂',
-                    value: latest != null ? latest.oxygen.toStringAsFixed(1) : '--',
-                    unit: 'mg/L',
-                    isOptimal: latest?.isOxygenOptimal ?? true,
-                    icon: Icons.water_drop_outlined,
-                    color: Colors.blueAccent,
-                  ),
-                  _buildMetricCard(
-                    context,
-                    title: 'Water Temp',
-                    value: latest != null ? latest.waterTemp.toStringAsFixed(1) : '--',
-                    unit: '°C',
-                    isOptimal: latest?.isWaterTempOptimal ?? true,
-                    icon: Icons.thermostat_outlined,
-                    color: Colors.orangeAccent,
-                  ),
-                  _buildMetricCard(
-                    context,
-                    title: 'Env Temp',
-                    value: latest != null ? latest.envTemp.toStringAsFixed(1) : '--',
-                    unit: '°C',
-                    isOptimal: latest?.isEnvTempOptimal ?? true,
-                    icon: Icons.wb_sunny_outlined,
-                    color: Colors.amber,
-                  ),
-                  _buildMetricCard(
-                    context,
-                    title: 'Env Humidity',
-                    value: latest != null ? latest.envHumidity.toStringAsFixed(1) : '--',
-                    unit: '%',
-                    isOptimal: latest?.isEnvHumidityOptimal ?? true,
-                    icon: Icons.opacity_outlined,
-                    color: Colors.teal,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 28),
+                ),
+                const SizedBox(height: 28),
 
-              // Interactive Historical Telemetry Graph (fl_chart)
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: cardBg,
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: cardBorder),
+                // Sensor Logs Table
+                Text(
+                  'Recent Sensor Stream Logs',
+                  style: GoogleFonts.inter(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: textColor,
+                  ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Telemetry Trend Chart',
-                          style: GoogleFonts.inter(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: textColor,
-                          ),
-                        ),
-                        DropdownButton<String>(
-                          value: _selectedMetricForChart,
-                          dropdownColor: isDark ? AppColors.surfaceLight : AppColors.lightSurfaceCard,
-                          style: GoogleFonts.inter(color: AppColors.primary, fontSize: 13, fontWeight: FontWeight.bold),
-                          underline: const SizedBox(),
-                          items: const [
-                            DropdownMenuItem(value: 'ph', child: Text('pH Level')),
-                            DropdownMenuItem(value: 'ec', child: Text('Conductivity (EC)')),
-                            DropdownMenuItem(value: 'oxygen', child: Text('Dissolved Oxygen')),
-                            DropdownMenuItem(value: 'waterTemp', child: Text('Water Temp (°C)')),
-                            DropdownMenuItem(value: 'envTemp', child: Text('Env Temp (°C)')),
-                            DropdownMenuItem(value: 'envHumidity', child: Text('Humidity (%)')),
-                          ],
-                          onChanged: (val) {
-                            if (val != null) {
-                              setState(() => _selectedMetricForChart = val);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      height: 200,
-                      child: logs.isEmpty
-                          ? const Center(child: CircularProgressIndicator())
-                          : _buildTelemetryChart(context, logs),
-                    ),
-                  ],
+                const SizedBox(height: 12),
+                Builder(
+                  builder: (context) {
+                    final recentLogs = logs.reversed.take(6).toList();
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: cardBg,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: cardBorder),
+                      ),
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: recentLogs.length,
+                        separatorBuilder: (context, index) =>
+                            Divider(color: cardBorder, height: 1),
+                        itemBuilder: (context, index) {
+                          final log = recentLogs[index];
+                          final timeStr = DateTime.fromMillisecondsSinceEpoch(
+                            log.time,
+                          ).toString().substring(11, 19);
+                          return ListTile(
+                            dense: true,
+                            leading: Text(
+                              timeStr,
+                              style: GoogleFonts.inter(
+                                fontSize: 12,
+                                color: secondaryTextColor,
+                              ),
+                            ),
+                            title: Text(
+                              'pH: ${log.ph} | EC: ${log.ec} mS/cm',
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                color: textColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            subtitle: Text(
+                              'O₂: ${log.oxygen} mg/L | Water: ${log.waterTemp}°C | Air: ${log.envTemp}°C',
+                              style: GoogleFonts.inter(
+                                fontSize: 11,
+                                color: secondaryTextColor,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
                 ),
-              ),
-              const SizedBox(height: 28),
-
-              // Actuator & Relays Control Toggles
-              Text(
-                'Device Controls & Actuators',
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: textColor,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: cardBg,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: cardBorder),
-                ),
-                child: Column(
-                  children: [
-                    _buildControlRow(
-                      context,
-                      title: 'Auto Nutrient Dosing Pump',
-                      subtitle: 'Doses A&B liquid nutrients based on EC targets',
-                      value: telemetryService.nutrientPumpActive,
-                      onChanged: telemetryService.toggleNutrientPump,
-                      icon: Icons.science,
-                    ),
-                    Divider(color: cardBorder, height: 24),
-                    _buildControlRow(
-                      context,
-                      title: 'Water Recirculation Pump',
-                      subtitle: 'Continuous aeration and roots hydration',
-                      value: telemetryService.waterPumpActive,
-                      onChanged: telemetryService.toggleWaterPump,
-                      icon: Icons.waves,
-                    ),
-                    Divider(color: cardBorder, height: 24),
-                    _buildControlRow(
-                      context,
-                      title: 'LED Grow Lights Array',
-                      subtitle: '16h active schedule full spectrum',
-                      value: telemetryService.growLightsActive,
-                      onChanged: telemetryService.toggleGrowLights,
-                      icon: Icons.light_mode,
-                    ),
-                    Divider(color: cardBorder, height: 24),
-                    _buildControlRow(
-                      context,
-                      title: 'Exhaust & Micro-Climate Fan',
-                      subtitle: 'Air circulation and humidity venting',
-                      value: telemetryService.exhaustFanActive,
-                      onChanged: telemetryService.toggleExhaustFan,
-                      icon: Icons.air,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 28),
-
-              // Sensor Logs Table
-              Text(
-                'Recent Sensor Stream Logs',
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: textColor,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Builder(
-                builder: (context) {
-                  final recentLogs = logs.reversed.take(6).toList();
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: cardBg,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: cardBorder),
-                    ),
-                    child: ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: recentLogs.length,
-                      separatorBuilder: (context, index) => Divider(color: cardBorder, height: 1),
-                      itemBuilder: (context, index) {
-                        final log = recentLogs[index];
-                        final timeStr = DateTime.fromMillisecondsSinceEpoch(log.time).toString().substring(11, 19);
-                        return ListTile(
-                          dense: true,
-                          leading: Text(
-                            timeStr,
-                            style: GoogleFonts.inter(fontSize: 12, color: secondaryTextColor),
-                          ),
-                          title: Text(
-                            'pH: ${log.ph} | EC: ${log.ec} mS/cm',
-                            style: GoogleFonts.inter(fontSize: 13, color: textColor, fontWeight: FontWeight.w600),
-                          ),
-                          subtitle: Text(
-                            'O₂: ${log.oxygen} mg/L | Water: ${log.waterTemp}°C | Air: ${log.envTemp}°C',
-                            style: GoogleFonts.inter(fontSize: 11, color: secondaryTextColor),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 30),
-            ],
+                const SizedBox(height: 30),
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildStatusBadge(DeviceConnectionStatus status) {
     Color bg;
@@ -506,7 +583,11 @@ class _IotDashboardScreenState extends State<IotDashboardScreen> {
           const SizedBox(width: 4),
           Text(
             label,
-            style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: text),
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: text,
+            ),
           ),
         ],
       ),
@@ -524,9 +605,13 @@ class _IotDashboardScreenState extends State<IotDashboardScreen> {
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardBg = isDark ? AppColors.surface : AppColors.lightSurface;
-    final cardBorder = isDark ? AppColors.surfaceBorder : AppColors.lightSurfaceBorder;
+    final cardBorder = isDark
+        ? AppColors.surfaceBorder
+        : AppColors.lightSurfaceBorder;
     final textColor = isDark ? Colors.white : AppColors.lightTextPrimary;
-    final secondaryTextColor = isDark ? AppColors.textSecondary : AppColors.lightTextSecondary;
+    final secondaryTextColor = isDark
+        ? AppColors.textSecondary
+        : AppColors.lightTextSecondary;
 
     return Container(
       padding: const EdgeInsets.all(14),
@@ -546,7 +631,9 @@ class _IotDashboardScreenState extends State<IotDashboardScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: isOptimal ? AppColors.primary.withValues(alpha: 0.2) : Colors.amber.withValues(alpha: 0.2),
+                  color: isOptimal
+                      ? AppColors.primary.withValues(alpha: 0.2)
+                      : Colors.amber.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -610,11 +697,17 @@ class _IotDashboardScreenState extends State<IotDashboardScreen> {
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? Colors.white : AppColors.lightTextPrimary;
-    final secondaryTextColor = isDark ? AppColors.textSecondary : AppColors.lightTextSecondary;
+    final secondaryTextColor = isDark
+        ? AppColors.textSecondary
+        : AppColors.lightTextSecondary;
 
     return Row(
       children: [
-        Icon(icon, color: value ? AppColors.primary : secondaryTextColor, size: 22),
+        Icon(
+          icon,
+          color: value ? AppColors.primary : secondaryTextColor,
+          size: 22,
+        ),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -622,11 +715,18 @@ class _IotDashboardScreenState extends State<IotDashboardScreen> {
             children: [
               Text(
                 title,
-                style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: textColor),
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: textColor,
+                ),
               ),
               Text(
                 subtitle,
-                style: GoogleFonts.inter(fontSize: 11, color: secondaryTextColor),
+                style: GoogleFonts.inter(
+                  fontSize: 11,
+                  color: secondaryTextColor,
+                ),
               ),
             ],
           ),
@@ -642,7 +742,9 @@ class _IotDashboardScreenState extends State<IotDashboardScreen> {
 
   Widget _buildTelemetryChart(BuildContext context, List<SensorReading> logs) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final gridBorder = isDark ? AppColors.surfaceBorder : AppColors.lightSurfaceBorder;
+    final gridBorder = isDark
+        ? AppColors.surfaceBorder
+        : AppColors.lightSurfaceBorder;
 
     final spots = <FlSpot>[];
     for (int i = 0; i < logs.length; i++) {
@@ -674,14 +776,10 @@ class _IotDashboardScreenState extends State<IotDashboardScreen> {
         gridData: FlGridData(
           show: true,
           drawVerticalLine: false,
-          getDrawingHorizontalLine: (value) => FlLine(
-            color: gridBorder,
-            strokeWidth: 1,
-          ),
+          getDrawingHorizontalLine: (value) =>
+              FlLine(color: gridBorder, strokeWidth: 1),
         ),
-        titlesData: const FlTitlesData(
-          show: false,
-        ),
+        titlesData: const FlTitlesData(show: false),
         borderData: FlBorderData(show: false),
         lineBarsData: [
           LineChartBarData(

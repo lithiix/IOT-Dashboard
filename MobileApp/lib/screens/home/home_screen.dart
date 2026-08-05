@@ -14,7 +14,8 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
   // Interactive Yield & Water Savings Calculator State
@@ -40,8 +41,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     final authService = Provider.of<AuthService>(context, listen: false);
     final user = authService.currentUser;
     final nameController = TextEditingController(text: user?.name ?? '');
-    final phoneController = TextEditingController(text: user?.phoneNumber ?? '');
-    final addressController = TextEditingController(text: user?.deliveryAddress ?? '');
+    final phoneController = TextEditingController(
+      text: user?.phoneNumber ?? '',
+    );
+    final addressController = TextEditingController(
+      text: user?.deliveryAddress ?? '',
+    );
     String selectedPaymentMethod = 'Cash on Delivery';
 
     showModalBottomSheet(
@@ -96,7 +101,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           ),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.close, color: AppColors.textSecondary),
+                          icon: const Icon(
+                            Icons.close,
+                            color: AppColors.textSecondary,
+                          ),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ],
@@ -143,15 +151,27 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     DropdownButtonFormField<String>(
                       initialValue: selectedPaymentMethod,
                       dropdownColor: AppColors.surfaceLight,
-                      style: GoogleFonts.inter(color: Colors.white, fontSize: 13),
+                      style: GoogleFonts.inter(
+                        color: Colors.white,
+                        fontSize: 13,
+                      ),
                       decoration: const InputDecoration(
                         labelText: 'Payment Method',
                         prefixIcon: Icon(Icons.payment_outlined),
                       ),
                       items: const [
-                        DropdownMenuItem(value: 'Cash on Delivery', child: Text('Cash on Delivery')),
-                        DropdownMenuItem(value: 'Bank Transfer / Direct Deposit', child: Text('Bank Transfer / Direct Deposit')),
-                        DropdownMenuItem(value: 'Online Card Payment', child: Text('Online Credit / Debit Card')),
+                        DropdownMenuItem(
+                          value: 'Cash on Delivery',
+                          child: Text('Cash on Delivery'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Bank Transfer / Direct Deposit',
+                          child: Text('Bank Transfer / Direct Deposit'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Online Card Payment',
+                          child: Text('Online Credit / Debit Card'),
+                        ),
                       ],
                       onChanged: (val) {
                         if (val != null) {
@@ -169,7 +189,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           Navigator.pop(context);
                           messenger.showSnackBar(
                             SnackBar(
-                              content: Text('Thank you! Order inquiry for ${product.title} (${product.price}) submitted via $selectedPaymentMethod.'),
+                              content: Text(
+                                'Thank you! Order inquiry for ${product.title} (${product.price}) submitted via $selectedPaymentMethod.',
+                              ),
                               backgroundColor: AppColors.primary,
                             ),
                           );
@@ -194,9 +216,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final textColor = isDark ? Colors.white : AppColors.lightTextPrimary;
-    final secondaryTextColor = isDark ? AppColors.textSecondary : AppColors.lightTextSecondary;
+    final secondaryTextColor = isDark
+        ? AppColors.textSecondary
+        : AppColors.lightTextSecondary;
     final cardBg = isDark ? AppColors.surface : AppColors.lightSurface;
-    final cardBorder = isDark ? AppColors.surfaceBorder : AppColors.lightSurfaceBorder;
+    final cardBorder = isDark
+        ? AppColors.surfaceBorder
+        : AppColors.lightSurfaceBorder;
 
     // Calculator values
     final waterSaved = (_currentWaterLitresPerMonth * 0.90).round();
@@ -211,7 +237,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               // Hero Banner Container
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 28,
+                ),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
@@ -227,7 +256,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.08),
+                      color: Colors.black.withValues(
+                        alpha: isDark ? 0.4 : 0.08,
+                      ),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                     ),
@@ -268,15 +299,24 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                         GestureDetector(
                           onTap: widget.onNavigateToDashboard,
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 8,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.primary.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: AppColors.primary.withValues(alpha: 0.4)),
+                              border: Border.all(
+                                color: AppColors.primary.withValues(alpha: 0.4),
+                              ),
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.sensors_rounded, size: 16, color: AppColors.primaryLight),
+                                const Icon(
+                                  Icons.sensors_rounded,
+                                  size: 16,
+                                  color: AppColors.primaryLight,
+                                ),
                                 const SizedBox(width: 6),
                                 Text(
                                   'Live Telemetry',
@@ -319,7 +359,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       decoration: BoxDecoration(
                         color: Colors.black.withValues(alpha: 0.3),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.1),
+                        ),
                       ),
                       child: AnimatedBuilder(
                         animation: _animationController,
@@ -331,11 +373,18 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                             ),
                             child: Center(
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 8,
+                                ),
                                 decoration: BoxDecoration(
                                   color: Colors.black.withValues(alpha: 0.6),
                                   borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: AppColors.cyanAccent.withValues(alpha: 0.4)),
+                                  border: Border.all(
+                                    color: AppColors.cyanAccent.withValues(
+                                      alpha: 0.4,
+                                    ),
+                                  ),
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -401,7 +450,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       ),
                     ),
                     const SizedBox(height: 16),
-                    ...Product.catalog.map((product) => _buildProductCard(context, product)),
+                    ...Product.catalog.map(
+                      (product) => _buildProductCard(context, product),
+                    ),
                   ],
                 ),
               ),
@@ -415,20 +466,28 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     gradient: LinearGradient(
                       colors: [
                         cardBg,
-                        AppColors.primary.withValues(alpha: isDark ? 0.15 : 0.08),
+                        AppColors.primary.withValues(
+                          alpha: isDark ? 0.15 : 0.08,
+                        ),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                    border: Border.all(
+                      color: AppColors.primary.withValues(alpha: 0.3),
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.calculate_outlined, color: AppColors.primary, size: 26),
+                          const Icon(
+                            Icons.calculate_outlined,
+                            color: AppColors.primary,
+                            size: 26,
+                          ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
@@ -445,7 +504,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       const SizedBox(height: 18),
                       Text(
                         'Number of Plant Sites: ${_numPlants.round()}',
-                        style: GoogleFonts.inter(color: textColor, fontWeight: FontWeight.w600, fontSize: 13),
+                        style: GoogleFonts.inter(
+                          color: textColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
                       ),
                       Slider(
                         value: _numPlants,
@@ -458,7 +521,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       const SizedBox(height: 10),
                       Text(
                         'Traditional Water Use: ${_currentWaterLitresPerMonth.round()} Litres / Mo',
-                        style: GoogleFonts.inter(color: textColor, fontWeight: FontWeight.w600, fontSize: 13),
+                        style: GoogleFonts.inter(
+                          color: textColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
                       ),
                       Slider(
                         value: _currentWaterLitresPerMonth,
@@ -466,15 +533,21 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                         max: 2000,
                         divisions: 19,
                         activeColor: AppColors.cyanAccent,
-                        onChanged: (val) => setState(() => _currentWaterLitresPerMonth = val),
+                        onChanged: (val) =>
+                            setState(() => _currentWaterLitresPerMonth = val),
                       ),
                       const SizedBox(height: 16),
 
                       // Safe Metric Container
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 14,
+                        ),
                         decoration: BoxDecoration(
-                          color: isDark ? AppColors.background.withValues(alpha: 0.7) : AppColors.lightSurfaceCard,
+                          color: isDark
+                              ? AppColors.background.withValues(alpha: 0.7)
+                              : AppColors.lightSurfaceCard,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(color: cardBorder),
                         ),
@@ -498,7 +571,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                                   Text(
                                     'Water Saved / Mo',
                                     textAlign: TextAlign.center,
-                                    style: GoogleFonts.inter(fontSize: 11, color: secondaryTextColor),
+                                    style: GoogleFonts.inter(
+                                      fontSize: 11,
+                                      color: secondaryTextColor,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -522,7 +598,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                                   Text(
                                     'Monthly Harvest',
                                     textAlign: TextAlign.center,
-                                    style: GoogleFonts.inter(fontSize: 11, color: secondaryTextColor),
+                                    style: GoogleFonts.inter(
+                                      fontSize: 11,
+                                      color: secondaryTextColor,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -568,9 +647,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   Widget _buildProductCard(BuildContext context, Product product) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardBg = isDark ? AppColors.surface : AppColors.lightSurface;
-    final cardBorder = isDark ? AppColors.surfaceBorder : AppColors.lightSurfaceBorder;
+    final cardBorder = isDark
+        ? AppColors.surfaceBorder
+        : AppColors.lightSurfaceBorder;
     final textColor = isDark ? Colors.white : AppColors.lightTextPrimary;
-    final secondaryTextColor = isDark ? AppColors.textSecondary : AppColors.lightTextSecondary;
+    final secondaryTextColor = isDark
+        ? AppColors.textSecondary
+        : AppColors.lightTextSecondary;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -579,7 +662,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         color: cardBg,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: product.isPopular ? AppColors.primary.withValues(alpha: 0.5) : cardBorder,
+          color: product.isPopular
+              ? AppColors.primary.withValues(alpha: 0.5)
+              : cardBorder,
           width: product.isPopular ? 1.5 : 1,
         ),
       ),
@@ -630,10 +715,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           const SizedBox(height: 4),
           Text(
             product.tagline,
-            style: GoogleFonts.inter(
-              fontSize: 12,
-              color: secondaryTextColor,
-            ),
+            style: GoogleFonts.inter(fontSize: 12, color: secondaryTextColor),
           ),
           const SizedBox(height: 10),
           Text(
@@ -653,13 +735,20 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 children: [
                   const Padding(
                     padding: EdgeInsets.only(top: 2),
-                    child: Icon(Icons.check_circle_rounded, size: 15, color: AppColors.primary),
+                    child: Icon(
+                      Icons.check_circle_rounded,
+                      size: 15,
+                      color: AppColors.primary,
+                    ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       feat,
-                      style: GoogleFonts.inter(fontSize: 12, color: secondaryTextColor),
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: secondaryTextColor,
+                      ),
                     ),
                   ),
                 ],
@@ -690,7 +779,7 @@ class HydroponicTowerPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    
+
     // Tower vertical column
     final towerPaint = Paint()
       ..color = const Color(0xFF334155)
